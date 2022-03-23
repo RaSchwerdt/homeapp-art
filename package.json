@@ -1,0 +1,15 @@
+{
+  "name": "homeapp-art",
+  "version": "1.0.0",
+  "description": "computer art",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "RSC",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.3",
+    "properties-reader": "^2.2.0"
+  }
+}
