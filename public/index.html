@@ -4,8 +4,11 @@
         <link rel="stylesheet" type="text/css" href="css/styles.css">
         <title>Computer ARt</title>
     </head>
-    <body onload="createCanvas()">
+    <body onload="initCanvas()" onresize="initCanvas()" >
         <div id="art-container">
+            <canvas id="art-canvas">
+                Your browser does not support canvas</canvas>         
+            </div>
         </div>
 
        <script src='scripts/fe.js'></script>
