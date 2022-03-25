@@ -4,13 +4,26 @@
         <link rel="stylesheet" type="text/css" href="css/styles.css">
         <title>Computer ARt</title>
     </head>
-    <body onload="initCanvas()" onresize="initCanvas()" >
-        <div id="art-container">
-            <canvas id="art-canvas">
-                Your browser does not support canvas</canvas>         
-            </div>
-        </div>
+    <body onresize="initCanvas()">
+        <div id="tab-container">
 
-       <script src='scripts/fe.js'></script>
+            <!-- Tab links -->
+            <div class="tab">
+                <button class="tablinks" onclick="openMenu(event, 'Circles')">Circles</button>
+                <button class="tablinks" onclick="openMenu(event, 'Dots')">Dots</button>
+            </div>
+            
+            <!-- Tab content -->
+            <div id="Circles" class="tabcontent">
+                <canvas id="art-canvas">
+                    Your browser does not support canvas</canvas>         
+            </div>
+            
+            <div id="Dots" class="tabcontent">
+                <canvas id="art-canvas">
+                    Your browser does not support canvas</canvas>         
+            </div>
+            
+        <script src='scripts/fe.js'></script>
     </body>
 </html>
