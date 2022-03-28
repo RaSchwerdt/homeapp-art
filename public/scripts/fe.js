@@ -1,17 +1,15 @@
 //Constants
 const artCanvas = document.getElementById('art-canvas');
 const ctx = artCanvas.getContext('2d');
+let lastCityName = "";
 
 //Functions
-function openMenu(evt, cityName) {
-    // Declare all variables
-    var i, tabcontent, tablinks;
-  
-    // Get all elements with class="tabcontent" and hide them
-    tabcontent = document.getElementsByClassName("tabcontent");
-    for (i = 0; i < tabcontent.length; i++) {
-      tabcontent[i].style.display = "none";
-    }
+function openMenu(cityName) {
+  // Declare all variables
+  var i, tablinks;
+
+  if (cityName.length >0) {
+    console.log("City ",cityName)
   
     // Get all elements with class="tablinks" and remove the class "active"
     tablinks = document.getElementsByClassName("tablinks");
@@ -19,30 +17,59 @@ function openMenu(evt, cityName) {
       tablinks[i].className = tablinks[i].className.replace(" active", "");
     }
   
-    // Show the current tab, and add an "active" class to the button that opened the tab
-    document.getElementById(cityName).style.display = "block";
-    evt.currentTarget.className += " active";
+    lastCityName = cityName;
+  } else if (lastCityName.length > 0) {
+    //Resize event
+    console.log("Window resize");
+    cityName = lastCityName;
+  } 
 
-    //Determine the windows size and init  canvas size
-    let canvasWidth = window.innerWidth * 0.95;
-    let canvasHeight = window.innerHeight * 0.9;
-    artCanvas.setAttribute ('width', window.innerWidth * 0.95);
-    artCanvas.setAttribute ('height', window.innerHeight * 0.9); 
-
-    if (cityName == "Circles") {
-      //Draw circle
-      let x = canvasWidth / 2;
-      let y = canvasHeight / 2;
-      let size = canvasWidth / 20;
-      drawCircle(x, y, size);     
-    }
+  //Resize canvas
+  artCanvas.setAttribute ('width', getCanvaseWidth());
+  artCanvas.setAttribute ('height', getCanvaseHeight()); 
+  
+    //Call draw function
+    switch (cityName) {
+      case "Circles":
+        drawCircles ()
+        break;
+      case "Dots":
+        drawDots ()
+        break;
+      default:
+        break;
   }
+}
+
+function getCanvaseWidth () {
+  return window.innerWidth * 0.95;
+}
+
+function getCanvaseHeight () {
+  return window.innerHeight * 0.9;
+}
 
 
-function drawCircle (x, y, size) {
-  console.log("Deaw circle x"+x+" y "+y)
+function drawCircles () {
+  let x = Math.floor(getCanvaseWidth() / 2);
+  let y = Math.floor(getCanvaseHeight() / 2);
+  let size = Math.floor(getCanvaseWidth() / 20);
+  console.log("Draw circle x "+x+" y "+y+ " size "+size);
   ctx.beginPath();
   ctx.arc(x, y, size, 0, 2 * Math.PI);
   ctx.strokeStyle = 'black';
   ctx.stroke();
+}
+
+function drawDots () {
+
+  for (let i=0; i< 30; i++) {
+    console.log ("Draw dots");
+    let x = Math.floor(Math.random() * getCanvaseWidth());
+    let y = Math.floor(Math.random() * getCanvaseHeight());
+    ctx.beginPath();
+    ctx.arc(x, y, 3, 0, 2 * Math.PI);
+    ctx.strokeStyle = 'black';
+    ctx.stroke();  
+  }
 }
