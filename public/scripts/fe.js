@@ -1,35 +1,43 @@
 //Constants
 const artCanvas = document.getElementById('art-canvas');
 const ctx = artCanvas.getContext('2d');
-let lastCityName = "";
+let selectedArt = "";
 
 //Functions
-function openMenu(cityName) {
-  // Declare all variables
-  var i, tablinks;
+function openMenu(selectedTab) {
+  //Remember menu item 
+  selectedArt = selectedTab;
 
-  if (cityName.length >0) {
-    console.log("City ",cityName)
+  //Clear background color and set selected bacjgorund color
+  let tablinks = document.getElementsByClassName("tablinks");
+  for (i = 0; i < tablinks.length; i++) {
+    tablinks[i].style.backgroundColor = "";
+  }
+  document.getElementById(selectedArt).style.backgroundColor = 'lightgrey';
+
+  //Clear canvas
+  ctx.clearRect (0, 0, artCanvas.width, artCanvas.height );
+    
+}
+
+function setCanvasSize () {
   
-    // Get all elements with class="tablinks" and remove the class "active"
-    tablinks = document.getElementsByClassName("tablinks");
-    for (i = 0; i < tablinks.length; i++) {
-      tablinks[i].className = tablinks[i].className.replace(" active", "");
-    }
-  
-    lastCityName = cityName;
-  } else if (lastCityName.length > 0) {
-    //Resize event
-    console.log("Window resize");
-    cityName = lastCityName;
-  } 
+  //Undo menu selection
+  selectedArt = "";
+  let tablinks = document.getElementsByClassName("tablinks");
+  for (i = 0; i < tablinks.length; i++) {
+    tablinks[i].style.backgroundColor = "";
+  }
 
   //Resize canvas
   artCanvas.setAttribute ('width', getCanvaseWidth());
   artCanvas.setAttribute ('height', getCanvaseHeight()); 
-  
-    //Call draw function
-    switch (cityName) {
+}
+
+function stepArt () {
+
+    //Start function for selected menu item
+    switch (selectedArt) {
       case "Circles":
         drawCircles ()
         break;
@@ -38,7 +46,7 @@ function openMenu(cityName) {
         break;
       default:
         break;
-  }
+    }
 }
 
 function getCanvaseWidth () {
@@ -63,8 +71,8 @@ function drawCircles () {
 
 function drawDots () {
 
+  console.log ("Draw dots");
   for (let i=0; i< 30; i++) {
-    console.log ("Draw dots");
     let x = Math.floor(Math.random() * getCanvaseWidth());
     let y = Math.floor(Math.random() * getCanvaseHeight());
     ctx.beginPath();

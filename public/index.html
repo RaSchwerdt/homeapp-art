@@ -2,15 +2,16 @@
 <html>
     <head>
         <link rel="stylesheet" type="text/css" href="css/styles.css">
-        <title>Computer ARt</title>
+        <title>Computer Art</title>
     </head>
-    <body onresize="openMenu('')" onload="openMenu('')">
+    <body onresize="setCanvasSize()" onload="setCanvasSize()">
         <div id="tab-container">
 
             <!-- Tab links -->
             <div class="tab">
-                <button class="tablinks" onclick="openMenu('Circles')">Circles</button>
-                <button class="tablinks" onclick="openMenu('Dots')">Dots</button>
+                <button id="Circles" class="tablinks" onclick="openMenu('Circles')">Circles</button>
+                <button id="Dots" class="tablinks" onclick="openMenu('Dots')">Dots</button>
+                <button class="tabctrl" onclick="stepArt()">Step</button>
             </div>
 
             <div class="tabcontent">
