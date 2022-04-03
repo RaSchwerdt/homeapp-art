@@ -14,10 +14,15 @@ const app = express();
 //Start reading index.html from directory start defined in properties file
 app.use(express.static(start));
 
-//app.get ('/index2', (req, res) => {
-//  res.sendFile(__dirname+'\\public\\index2.html');    
-//});
+app.get ('/circles', function (req, res) {
+  console.log("circles");
+  res.sendFile(`${__dirname}\\public\\circles.html`);    
+});
 
+app.get ('/dots', function (req, res) {
+    console.log("dots");
+    res.sendFile(`${__dirname}\\public\\dots.html`);
+  });
 
 //Catch all requests which have no routing. identify IP
 app.get('*', function(req, res, next) {

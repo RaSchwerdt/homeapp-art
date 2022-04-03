@@ -4,24 +4,14 @@
         <link rel="stylesheet" type="text/css" href="css/styles.css">
         <title>Computer Art</title>
     </head>
-    <body onresize="setCanvasSize()" onload="setCanvasSize()">
+    <body>
         <div id="tab-container">
 
             <!-- Tab links -->
             <div class="tab">
-                <button id="Circles" class="tablinks" onclick="openMenu('Circles')">Circles</button>
-                <button id="Dots" class="tablinks" onclick="openMenu('Dots')">Dots</button>
-                <button class="tabctrl" onclick="stepArt()">Step</button>
+                <a class="tableft" href="/circles">Circles</a>
+                <a class="tableft" href="/dots">Dots</a>
             </div>
-
-            <div class="tabcontent">
-                <!-- art board -->
-                <canvas id="art-canvas">
-                    Your browser does not support canvas
-                </canvas>
-            </div>
-            
-
-        <script src='scripts/fe.js'></script>
+        </div>
     </body>
 </html>

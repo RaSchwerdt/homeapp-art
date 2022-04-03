@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="css/styles.css">
+        <title>Computer Art - Circles</title>
+    </head>
+    <body onload="setCanvasSize()" onresize="setCanvasSize()">
+        <div id="tab-container">
+        <!-- Tab links -->
+        <div class="tab">
+            <ins class="tableft">Dots</ins>
+            <a class="tabright" href="/">Back</a>
+            <a class="tabright" onclick="drawDots()">Draw</a>
+        </div>
+        
+        <div class="tabcontent">
+            <!-- art board -->
+            <canvas id="art-canvas">
+                Your browser does not support canvas
+            </canvas>
+        </div>
+
+        <script src='scripts/dots.js'></script>
+    </body>
+</html>
