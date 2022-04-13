@@ -1,28 +1,41 @@
 'use strict'
+//Constants
 
 //Read app properties from file
 let PropertiesReader = require('properties-reader');
 let properties = PropertiesReader('./env/app.properties');
 let port = properties.get('main.app.port');
 let host = properties.get('main.app.host');
-let start = properties.get('main.app.start');
+let start = properties.get('main.app.static');
+let filestore = properties.get('main.app.filestore');
 
-//Use express
+//Nodejs modules
 const express = require('express');
 const app = express();
+
+//Local modules
+var filsto = require('./public/scripts-be/filestore.js');
+var drwjso = require('./public/scripts-be/drawjson.js');
 
 //Start reading index.html from directory start defined in properties file
 app.use(express.static(start));
 
-app.get ('/circles', function (req, res) {
+app.get ('/imgshow', function (req, res) {
   console.log("circles");
-  res.sendFile(`${__dirname}\\public\\circles.html`);    
+  res.sendFile(`${__dirname}\\public\\imgshow.html`);    
 });
 
-app.get ('/dots', function (req, res) {
+app.get ('/artjson', function (req, res) {
     console.log("dots");
-    res.sendFile(`${__dirname}\\public\\dots.html`);
-  });
+    res.sendFile(`${__dirname}\\public\\artjson.html`);
+ });
+
+app.get('/reqnex', function(req, res) {
+  console.log ("reqnex ");
+  
+  res.send(JSON.stringify(drwjso.drawToJson()));
+});
+  
 
 //Catch all requests which have no routing. identify IP
 app.get('*', function(req, res, next) {
@@ -45,3 +58,5 @@ app.get('*', function(req, res, next) {
   
 app.listen(port, host);
 console.log('web server at port '+port+' host '+host+' is running..')
+filsto.getStorageLocation(filestore);
+
