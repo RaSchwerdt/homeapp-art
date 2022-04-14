@@ -20,15 +20,22 @@ let circle = {
 function drawToJson () {
 
     if (filsto.fileExists() == true) {
-        console.log ("drawImage read file");
+        //Read last saved drawing
+        console.log ("drawToJson read file");
         let drawObj = filsto.readObject();
-        //drawObj.circle.x++;
-        //filsto.writeObject(drawObj);
+
+        //Modify drawing
+        drawObj.circles[0].x++;
+        console.log("Cricle [0]"+drawObj.circles[0].x);
+
+        //Save modified drawing
+        filsto.writeObject(drawObj);
 
         return (drawObj);
     }
 
-    console.log ("drawImage write file");
+    //No drawing stored - create initial drawing
+    console.log ("drawToJson write file");
     circle.x = 800;
     circle.y = 450;
     circle.size = 20;

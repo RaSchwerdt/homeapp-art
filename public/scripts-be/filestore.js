@@ -22,6 +22,7 @@ function readObject () {
     let o = null;
     try {
         const jsonString = fs.readFileSync(filestore);
+        //console.log("File content json "+jsonString);
         o = JSON.parse(jsonString);
 
     } catch (err) {

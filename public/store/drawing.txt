@@ -1,1 +1,1 @@
-{"imgwith":1600,"imgheight":900,"circles":[{"x":800,"y":450,"size":20},{"x":800,"y":450,"size":20}]}
+{"imgwith":1600,"imgheight":900,"circles":[{"x":811,"y":450,"size":20},{"x":800,"y":450,"size":20}]}
