@@ -8,6 +8,7 @@ let port = properties.get('main.app.port');
 let host = properties.get('main.app.host');
 let start = properties.get('main.app.static');
 let filestore = properties.get('main.app.filestore');
+let imgpath = properties.get('main.app.imgpath');
 
 //Nodejs modules
 const express = require('express');
@@ -16,17 +17,19 @@ const app = express();
 //Local modules
 var filsto = require('./public/scripts-be/filestore.js');
 var drwjso = require('./public/scripts-be/drawjson.js');
+var imgshw = require('./public/scripts-be/imgshow.js');
 
 //Start reading index.html from directory start defined in properties file
 app.use(express.static(start));
 
 app.get ('/imgshow', function (req, res) {
-  console.log("circles");
+  console.log("imgshow");
+  //imgshw.scanImages();
   res.sendFile(`${__dirname}\\public\\imgshow.html`);    
 });
 
 app.get ('/artjson', function (req, res) {
-    console.log("dots");
+    console.log("artjson");
     res.sendFile(`${__dirname}\\public\\artjson.html`);
  });
 
@@ -59,4 +62,5 @@ app.get('*', function(req, res, next) {
 app.listen(port, host);
 console.log('web server at port '+port+' host '+host+' is running..')
 filsto.getStorageLocation(filestore);
+imgshw.getImagePath(imgpath);
 

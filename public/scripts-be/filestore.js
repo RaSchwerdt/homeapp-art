@@ -6,9 +6,9 @@ function getStorageLocation (stl) {
     filestore = stl;
 }
 
-function writeObject (o) {
-
-    fs.writeFileSync(filestore, JSON.stringify(o), err => {
+function writeObject (filename, o) {
+    console.log ("write file "+filestore+filename);
+    fs.writeFileSync(filestore+filename, JSON.stringify(o), err => {
         if (err) {
             console.log(err);
             return
@@ -17,11 +17,11 @@ function writeObject (o) {
 }
 
 
-function readObject () {
-    console.log ("read file "+filestore);
+function readObject (filename) {
+    console.log ("read file "+filestore+filename);
     let o = null;
     try {
-        const jsonString = fs.readFileSync(filestore);
+        const jsonString = fs.readFileSync(filestore+filename);
         //console.log("File content json "+jsonString);
         o = JSON.parse(jsonString);
 
@@ -31,8 +31,8 @@ function readObject () {
     return o;
 }
 
-function fileExists () {
-    return fs.existsSync(filestore);
+function fileExists (filename) {
+    return fs.existsSync(filestore+filename);
 }
 
 module.exports = {
