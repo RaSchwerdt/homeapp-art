@@ -1,1 +1,0 @@
-{"imgwith":1600,"imgheight":900,"circles":[{"x":803,"y":450,"size":20}]}

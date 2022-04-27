@@ -11,7 +11,7 @@ function getImagePath (ip) {
 }
 
 function getAllImages (rootPath, dirPath, imgList) {
-    console.log("getAllImages");
+    //console.log("getAllImages");
     
     //Check for images in this path and add to list
     fs.readdirSync (dirPath).forEach (function (file) {
@@ -40,7 +40,17 @@ function scanImages () {
     filsto.writeObject(imgjson, imgList);
 }
 
+function selectImage () {
+    let img = filsto.readObject(imgjson);
+    let pos = Math.floor(Math.random() * img.length)
+    let imgpos = img[pos].slice(imagePath.length);
+    imgpos = "img"+imgpos.split(path.sep).join("/");
+    //console.log ("pos "+pos+" Imgpos "+imgpos);
+    return (imgpos);
+}
+
 module.exports = {
     scanImages: scanImages,
     getImagePath: getImagePath,
+    selectImage: selectImage,
 };

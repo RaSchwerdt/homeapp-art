@@ -7,7 +7,7 @@ function getStorageLocation (stl) {
 }
 
 function writeObject (filename, o) {
-    console.log ("write file "+filestore+filename);
+    //console.log ("write file "+filestore+filename);
     fs.writeFileSync(filestore+filename, JSON.stringify(o), err => {
         if (err) {
             console.log(err);
@@ -18,7 +18,7 @@ function writeObject (filename, o) {
 
 
 function readObject (filename) {
-    console.log ("read file "+filestore+filename);
+    //console.log ("read file "+filestore+filename);
     let o = null;
     try {
         const jsonString = fs.readFileSync(filestore+filename);

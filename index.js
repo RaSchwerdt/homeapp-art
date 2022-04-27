@@ -1,14 +1,11 @@
+const imgslct = require("./public/scripts-be/imgslct.js");
+
+(async () => {
 'use strict'
 //Constants
 
 //Read app properties from file
-let PropertiesReader = require('properties-reader');
-let properties = PropertiesReader('./env/app.properties');
-let port = properties.get('main.app.port');
-let host = properties.get('main.app.host');
-let start = properties.get('main.app.static');
-let filestore = properties.get('main.app.filestore');
-let imgpath = properties.get('main.app.imgpath');
+require("dotenv").config();
 
 //Nodejs modules
 const express = require('express');
@@ -16,27 +13,25 @@ const app = express();
 
 //Local modules
 var filsto = require('./public/scripts-be/filestore.js');
-var drwjso = require('./public/scripts-be/drawjson.js');
-var imgshw = require('./public/scripts-be/imgshow.js');
+var imgslct = require('./public/scripts-be/imgslct.js');
 
 //Start reading index.html from directory start defined in properties file
-app.use(express.static(start));
+app.use(express.static(process.env.static));
+app.use('/img', express.static(process.env.imgpath));
 
 app.get ('/imgshow', function (req, res) {
-  console.log("imgshow");
-  //imgshw.scanImages();
+  //console.log("imgshow");
   res.sendFile(`${__dirname}\\public\\imgshow.html`);    
 });
 
-app.get ('/artjson', function (req, res) {
-    console.log("artjson");
-    res.sendFile(`${__dirname}\\public\\artjson.html`);
+app.get ('/drawart', function (req, res) {
+    //console.log("drawart");
+    res.sendFile(`${__dirname}\\public\\drawart.html`);
  });
 
-app.get('/reqnex', function(req, res) {
-  console.log ("reqnex ");
-  
-  res.send(JSON.stringify(drwjso.drawToJson()));
+app.get('/reqneximg', function(req, res) {
+  //console.log ("reqneximg ");
+  res.send(imgslct.selectImage());
 });
   
 
@@ -59,8 +54,10 @@ app.get('*', function(req, res, next) {
       res.status(err.statusCode).send(err.message); // If shouldRedirect is not defined in our error, sends our original err data
 }});  
   
-app.listen(port, host);
-console.log('web server at port '+port+' host '+host+' is running..')
-filsto.getStorageLocation(filestore);
-imgshw.getImagePath(imgpath);
+app.listen(process.env.port, process.env.host);
+console.log('web server at port '+process.env.port+' host '+process.env.host+' is running..')
+filsto.getStorageLocation(process.env.filestore);
+imgslct.getImagePath(process.env.imgpath);
+imgslct.scanImages();
 
+}) ();
