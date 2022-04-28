@@ -1,5 +1,5 @@
 //Constants
-const MAX_BALLS = 5;
+const MAX_BALLS = 20;
 let loopInterval;
 let artCanvas = null;
 let ctx = null;
@@ -17,13 +17,15 @@ let ball = {
   dy: 0,
   rad: 0,
   col: null,
-  init: function (x, y, dx, dy, rad, col) {
+  mass: 0,
+  init: function (x, y, dx, dy, rad, col, mass) {
     this.x = x;
     this.y = y;
     this.dx = dx;
     this.dy = dy;
     this.rad = rad;
     this.col = col;
+    this.mass = mass;
   },
 }
 
@@ -45,6 +47,7 @@ function loadArt () {
       2,
       10,
       "#0095DD",
+      10,
       )
   }  
   console.log ("ball0 x"+balls[0].x+" y "+balls[0].y+" dx "+balls[0].dx+" dy "+balls[0].dy+" rad "+balls[0].rad+" col "+balls[0].col);
@@ -101,8 +104,31 @@ function detectCollisions () {
       obj2 = balls[j];
       if (circleIntersect(obj1.x, obj1.y, obj1.rad, obj2.x, obj2.y, obj2.rad)) {
         //console.log("collsion detect at "+obj1.x)
-        obj1.col = "#225588";
-        obj2.col = "#225588";
+        obj1.col = "#DE1C1C";
+        obj2.col = "#DE1C1C";
+
+        let vCollision = {x: obj2.x - obj1.x, y: obj2.y - obj1.y};
+        let distance = Math.sqrt((obj2.x-obj1.x)*(obj2.x-obj1.x) + (obj2.y-obj1.y)*(obj2.y-obj1.y));
+        let vCollisionNorm = {x: vCollision.x / distance, y: vCollision.y / distance};
+        let vRelativeVelocity = {x: obj1.dx - obj2.dx, y: obj1.dy - obj2.dy};
+        let speed = vRelativeVelocity.x * vCollisionNorm.x + vRelativeVelocity.y * vCollisionNorm.y;
+        //console.log("vCollision-x "+vCollision.x+" vCollision-y "+vCollision.y);
+        //console.log("distance "+distance);
+        //console.log("vCollisionNorm-x "+vCollisionNorm.x+" vCollisionNorm-y "+vCollisionNorm.y);
+        //console.log("vRelativeVelocity-x "+vRelativeVelocity.x+" vRelativeVelocity-y.y "+vRelativeVelocity.y);
+        //console.log("speed "+speed);
+
+        if (speed < 0) {
+            break;
+        }
+
+        //console.log("New speed "+speed);
+        let impulse = 2 * speed / (obj1.mass + obj2.mass);
+        obj1.dx -= (impulse * obj2.mass * vCollisionNorm.x);
+        obj1.dy -= (impulse * obj2.mass * vCollisionNorm.y);
+        obj2.dx += (impulse * obj1.mass * vCollisionNorm.x);
+        obj2.dy += (impulse * obj1.mass * vCollisionNorm.y);
+
       }
     }
   }
