@@ -1,15 +1,8 @@
 //Constants
 const MAX_BALLS = 20;
 let loopInterval;
-let artCanvas = null;
-let ctx = null;
-/*
-let x = artCanvas.width/2;
-let y = artCanvas.height-30;
-let dx = 2;
-let dy = -2;
-let ballRadius = 10;
-*/
+let artCanvas = document.getElementById('art-canvas');
+let ctx = artCanvas.getContext('2d');
 let ball = {
   x: 0,
   y: 0,
@@ -28,35 +21,33 @@ let ball = {
     this.mass = mass;
   },
 }
-
 let balls = [];
-
-function loadArt () {
-  console.log("loadArt");
-  artCanvas = document.getElementById('art-canvas');
-  artCanvas.setAttribute ('width', window.innerWidth * 0.95);
-  artCanvas.setAttribute ('height', window.innerHeight * 0.9); 
-  ctx = artCanvas.getContext('2d');
-  
-  for (let i=0; i< MAX_BALLS; i++) {
-    console.log("ball "+i);
-    balls[i] = new ball.init ( 
-      Math.floor(Math.random()*artCanvas.width), 
-      Math.floor(Math.random()*artCanvas.height),
-      2,
-      2,
-      10,
-      "#0095DD",
-      10,
-      )
-  }  
-  console.log ("ball0 x"+balls[0].x+" y "+balls[0].y+" dx "+balls[0].dx+" dy "+balls[0].dy+" rad "+balls[0].rad+" col "+balls[0].col);
-}
-
 
 //Functions
 function startLoop () {
   console.log("startLoop");
+  if (balls.length==0) {
+    console.log ("Init balls");
+  
+    for (let i=0; i< MAX_BALLS; i++) {
+      console.log("ball "+i);
+      balls[i] = new ball.init ( 
+        Math.floor(Math.random()*artCanvas.width), 
+        Math.floor(Math.random()*artCanvas.height),
+        2,
+        2,
+        10,
+        "#0095DD",
+        10,
+        )
+        if (balls[i].x<balls[i].rad) {balls[i].x += balls[i].rad;}
+        if (balls[i].x>artCanvas.width-balls[i].rad) {balls[i].x -= balls[i].rad;}
+        if (balls[i].y<balls[i].rad) {balls[i].y += balls[i].rad;}
+        if (balls[i].y>artCanvas.height-balls[i].rad) {balls[i].y -= balls[i].rad;}
+    }  
+    console.log ("ball0 x"+balls[0].x+" y "+balls[0].y+" dx "+balls[0].dx+" dy "+balls[0].dy+" rad "+balls[0].rad+" col "+balls[0].col);
+  
+  }
   loopInterval = setInterval(drawToCanvas, 20);
 }
 

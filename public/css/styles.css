@@ -4,59 +4,60 @@
     overflow: hidden;
     border: 1px solid #ccc;
     background-color: #f1f1f1;
-  }
-  
-  /* Style the buttons that are used to open the tab content */
-  .tab a, ins {
-    background-color: inherit;
-    text-decoration: none;
-    color: #000;
-    border: none;
-    outline: none;
-    cursor: pointer;
-    padding: 14px 16px;
-    transition: 0.3s;
-  }
+}
 
-    /* Change background color of buttons on hover */
-    .tab a:hover {
-      background-color: #ddd;
-    }
-  
-  
-  .tableft {
-    float: left;
-  }
+/* Style the buttons that are used to open the tab content */
+.tab a, ins {
+  background-color: inherit;
+  text-decoration: none;
+  color: #000;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 14px 16px;
+  transition: 0.3s;
+}
 
-  .tabright {
-    float: right;
-  }
-  
-  /* Style the tab content */
-  .tabcontent {
-    /*display: none;*/
-    /*padding: 8px 8px;*/
-    border: 1px solid #ccc;
-    border-top: none;
-    position: relative;
-  }
+/* Change background color of buttons on hover */
+.tab a:hover {
+  background-color: #ddd;
+}
 
-  #img-show {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-  }
 
-  #img-text {
-    position: absolute;
-    bottom: 8px;
-    right: 40px;
-    color: red;
-  }
+.tableft {
+  float: left;
+  overflow: hidden;
+}
 
-  #art-canvas {
-    display: block;
-    /*border: 1px solid rgb(255, 254, 254);*/
-    background: #eee;
-    margin: 0 auto;
+.tabright {
+  float: right;
+}
+
+/* Style the tab content */
+.tabcontent {
+  /*display: none;*/
+  /*padding: 8px 8px;*/
+  border: 1px solid #ccc;
+  border-top: none;
+  position: relative;
+}
+
+#img-show {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#img-text {
+  position: absolute;
+  bottom: 8px;
+  right: 40px;
+  color: red;
+}
+
+#art-canvas {
+  display: block;
+  /*border: 1px solid rgb(255, 254, 254);*/
+  background: #eee;
+  margin: 0 auto;
 }
