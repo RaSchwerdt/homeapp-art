@@ -42,6 +42,13 @@
   position: relative;
 }
 
+.formcontent {
+  position: absolute;
+  /*text-align: center;
+  margin-left: auto;
+  margin-right: auto;*/
+}
+
 #img-show {
   display: block;
   margin-left: auto;

@@ -1,5 +1,5 @@
 //Constants
-const MAX_BALLS = 20;
+const MAX_BALLS = 10;
 let loopInterval;
 let artCanvas = document.getElementById('art-canvas');
 let ctx = artCanvas.getContext('2d');
@@ -20,8 +20,20 @@ let ball = {
     this.col = col;
     this.mass = mass;
   },
-}
+};
 let balls = [];
+let crash = {
+  x: 0,
+  y: 0,
+  r: 0,
+  init: function (x, y, r) {
+    this.x = x;
+    this.y = y;
+    this.r = r;
+  }
+};
+let crashes = [];
+
 
 //Functions
 function startLoop () {
@@ -59,6 +71,7 @@ function stopLoop () {
 function drawToCanvas () {
   //console.log ("Draw to canvas");
   ctx.clearRect(0, 0, artCanvas.width, artCanvas.height);
+  drawCrashes();
   drawBalls();
   bounceOffWalls();
   detectCollisions();
@@ -74,6 +87,17 @@ function drawBalls () {
     ctx.fill();
     ctx.closePath();  
   }
+}
+
+function drawCrashes () {
+  //console.log("drawCrashes");
+  for (let i=0; i< crashes.length; i++) {
+    ctx.beginPath();
+    ctx.arc(crashes[i].x, crashes[i].y, crashes[i].r, 0, Math.PI*2);
+    ctx.fillStyle = "#999999"
+    ctx.fill();
+    ctx.closePath();
+  }  
 }
 
 function moveBalls () {
@@ -109,9 +133,12 @@ function detectCollisions () {
         //console.log("vRelativeVelocity-x "+vRelativeVelocity.x+" vRelativeVelocity-y.y "+vRelativeVelocity.y);
         //console.log("speed "+speed);
 
+
         if (speed < 0) {
             break;
         }
+
+        crashes.push (new crash.init(Math.floor(obj1.x), Math.floor(obj1.y), Math.floor(distance)));
 
         //console.log("New speed "+speed);
         let impulse = 2 * speed / (obj1.mass + obj2.mass);
