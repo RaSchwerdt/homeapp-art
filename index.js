@@ -1,5 +1,3 @@
-const imgslct = require("./public/scripts-be/imgslct.js");
-
 (async () => {
 'use strict'
 //Constants
@@ -10,6 +8,7 @@ require("dotenv").config();
 //Nodejs modules
 const express = require('express');
 const app = express();
+app.set('view engine', 'ejs');
 
 //Local modules
 var filsto = require('./public/scripts-be/filestore.js');
@@ -19,15 +18,34 @@ var imgslct = require('./public/scripts-be/imgslct.js');
 app.use(express.static(process.env.static));
 app.use('/img', express.static(process.env.imgpath));
 
-app.get ('/imgshow', function (req, res) {
-  //console.log("imgshow");
-  res.sendFile(`${__dirname}\\public\\imgshow.html`);    
+// index page
+app.get('/', function(req, res) {
+  res.render('pages/index');
 });
 
+app.get ('/imgshow', function (req, res) {
+  //console.log("imgshow");
+  //res.sendFile(`${__dirname}\\public\\imgshow.html`);    
+  res.render('pages/imgshow');
+});
+
+app.get('/drawslct', function(req, res) {
+  let request="http://"+process.env.host+":"+process.env.port+"/drawart"
+  res.render('pages/drawslct', {
+    request: request
+  });
+});
+
+
 app.get ('/drawart', function (req, res) {
-    //console.log("drawart");
-    res.sendFile(`${__dirname}\\public\\drawart.html`);
- });
+  let param = req.url.slice(req.url.indexOf("=")+1, req.url.length);
+   console.log ("drawart "+param);
+   let scrptnm = 'scripts-fe/'+param+'.js';
+   res.render ('pages/drawart', {
+    scrptnm: scrptnm
+   })
+});
+
 
 app.get('/reqneximg', function(req, res) {
   //console.log ("reqneximg ");
