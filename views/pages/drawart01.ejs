@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" >
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+<title>Homeapp-Art</title>
+</head>
+    <body>
+        <div class="container">
+            <h1>Computer Art - Push</h1>
+            <div class="art-canvas">
+                <canvas id="art-canvas" width="600" height="400" style="background-color: #d7f0fd">
+                    Your browser does not support canvas
+                </canvas>    
+            </div>
+            <button id="start-button" type="button" class="btn btn-secondary">Start</button>
+            <button id="stop-button" type="button" class="btn btn-secondary">Stop</button>
+            <button id="clear-button" type="button" class="btn btn-secondary">Clear</button>
+            <div class="mb-3 row">
+                <label>Ball speed</label>
+                <select class="form-select form-select-sm" id="ball-speed">
+                    <option value="60">60</option>
+                    <option value="40">40</option>
+                    <option value="20">20</option>
+                    <option value="10">10</option>
+                    </select>
+            </div> 
+            <div class="mb-3 row">
+                <label>Number of balls</label>
+                <select class="form-select form-select-sm" id="num-balls">
+                    <option value="10">10</option>
+                    <option value="15">15</option>
+                    <option value="20">20</option>
+                </select>
+            </div> 
+            <div class="mb-3 row">
+                <label>Ball size</label>
+                <select class="form-select form-select-sm" id="ball-size">
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="15">15</option>
+                    </select>
+            </div> 
+            <div class="mb-3 row">
+                <label>Push factor</label>
+                <select class="form-select form-select-sm" id="push-factor">
+                    <option value="1.0">1.0</option>
+                    <option value="0.98">0.98</option>
+                    <option value="0.95">0.95</option>
+                    <option value="0.9">0.9</option>
+                    <option value="1.02">1.02</option>
+                    <option value="1.05">1.05</option>
+                    <option value="1.1">1.1</option>
+                </select>
+            </div> 
+            <div class="mb-3 row">
+                <label>Crash shrink factor</label>
+                <select class="form-select form-select-sm" id="crash-shrink">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="5">5</option>
+                    </select>
+            </div> 
+            <div class="mb-3 row">
+                <label>Crash scale factor</label>
+                <select class="form-select form-select-sm" id="crash-scale">
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="15">15</option>
+                    <option value="20">20</option>
+                    </select>
+            </div> 
+            <a href="/" type="button" class="btn btn-primary">Back</a>
+        </div>       
+        <script src="scripts/bootstrap.min.js"></script>
+        <script src="scripts/drawart01.js"></script>
+    </body>
+</html>

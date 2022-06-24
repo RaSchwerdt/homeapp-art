@@ -11,8 +11,6 @@ const app = express();
 app.set('view engine', 'ejs');
 
 //Local modules
-var filsto = require('./public/scripts-be/filestore.js');
-var imgslct = require('./public/scripts-be/imgslct.js');
 
 //Start reading index.html from directory start defined in properties file
 app.use(express.static(process.env.static));
@@ -23,35 +21,12 @@ app.get('/', function(req, res) {
   res.render('pages/index');
 });
 
-app.get ('/imgshow', function (req, res) {
-  //console.log("imgshow");
-  //res.sendFile(`${__dirname}\\public\\imgshow.html`);    
-  res.render('pages/imgshow');
-});
-
-app.get('/drawslct', function(req, res) {
-  let request="http://"+process.env.host+":"+process.env.port+"/drawart"
-  res.render('pages/drawslct', {
-    request: request
-  });
-});
-
-
-app.get ('/drawart', function (req, res) {
-  let param = req.url.slice(req.url.indexOf("=")+1, req.url.length);
-   console.log ("drawart "+param);
-   let scrptnm = 'scripts-fe/'+param+'.js';
-   res.render ('pages/drawart', {
-    scrptnm: scrptnm
-   })
-});
-
-
-app.get('/reqneximg', function(req, res) {
-  //console.log ("reqneximg ");
-  res.send(imgslct.selectImage());
-});
-  
+app.get ('/drawart01', function (req, res) {
+  //let param = req.url.slice(req.url.indexOf("=")+1, req.url.length);
+  console.log ("drawart01");
+   //let scrptnm = 'scripts-fe/'+param+'.js';
+   res.render ('pages/drawart01');
+}); 
 
 //Catch all requests which have no routing. identify IP
 app.get('*', function(req, res, next) {
@@ -67,15 +42,14 @@ app.get('*', function(req, res, next) {
     if (!err.statusCode) err.statusCode = 500; // Sets a generic server error status code if none is part of the err
   
     if (err.shouldRedirect) {
-      res.render('myErrorPage') // Renders a myErrorPage.html for the user
+      res.render('pages/error', {
+        status: err.statusCode,
+        message: err.message
+      }) // Renders a myErrorPage.html for the user
     } else {
       res.status(err.statusCode).send(err.message); // If shouldRedirect is not defined in our error, sends our original err data
 }});  
   
 app.listen(process.env.port, process.env.host);
 console.log('web server at port '+process.env.port+' host '+process.env.host+' is running..')
-filsto.getStorageLocation(process.env.filestore);
-imgslct.getImagePath(process.env.imgpath);
-imgslct.scanImages();
-
 }) ();
