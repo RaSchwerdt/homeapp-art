@@ -109,8 +109,8 @@ function startLoop () {
       balls[i] = new ball.init ( 
         Math.floor(Math.random()*artCanvas.width), 
         Math.floor(Math.random()*artCanvas.height),
-        2,
-        2,
+        Math.floor(Math.random()*6)-3,
+        Math.floor(Math.random()*4)-2,
         parBallSize,
         "#0095DD",
         parBallSize,
