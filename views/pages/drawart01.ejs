@@ -21,6 +21,7 @@
             <div class="mb-3 row">
                 <label>Ball speed</label>
                 <select class="form-select form-select-sm" id="ball-speed">
+                    <option value="80">80</option>
                     <option value="60">60</option>
                     <option value="40">40</option>
                     <option value="20">20</option>
@@ -45,15 +46,23 @@
                     </select>
             </div> 
             <div class="mb-3 row">
-                <label>Push factor</label>
-                <select class="form-select form-select-sm" id="push-factor">
-                    <option value="1.0">1.0</option>
-                    <option value="0.98">0.98</option>
-                    <option value="0.95">0.95</option>
-                    <option value="0.9">0.9</option>
-                    <option value="1.02">1.02</option>
-                    <option value="1.05">1.05</option>
-                    <option value="1.1">1.1</option>
+                <label>Push amplitude</label>
+                <select class="form-select form-select-sm" id="push-amp">
+                    <option value="0.0">0.0</option>
+                    <option value="0.01">0.01</option>
+                    <option value="0.02">0.02</option>
+                    <option value="0.05">0.05</option>
+                    <option value="0.1">0.1</option>
+                    <option value="0.2">0.2</option>
+                </select>
+            </div> 
+            <div class="mb-3 row">
+                <label>Push change interval</label>
+                <select class="form-select form-select-sm" id="push-change">
+                    <option value="2000">2000</option>
+                    <option value="1500">1500</option>
+                    <option value="1000">1000</option>
+                    <option value="500">500</option>
                 </select>
             </div> 
             <div class="mb-3 row">
@@ -63,6 +72,15 @@
                     <option value="2">2</option>
                     <option value="5">5</option>
                     </select>
+            </div> 
+            <div class="mb-3 row">
+                <label>Shrink interval</label>
+                <select class="form-select form-select-sm" id="shrink-interval">
+                    <option value="2000">2000</option>
+                    <option value="1500">1500</option>
+                    <option value="1000">1000</option>
+                    <option value="500">500</option>
+                </select>
             </div> 
             <div class="mb-3 row">
                 <label>Crash scale factor</label>

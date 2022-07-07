@@ -47,14 +47,17 @@ let crashColors = [
 "#506775"
 ];
 let loopCount = 0;
+let pushFactor = 1.0;
 let params = {
   file: FILE_NAME,
-  ballSpeed: 60,
+  ballSpeed: 80,
   numBalls: 10,
   ballSize: 5,
-  pushFactor: 1.0,
+  pushAmp: 0.0,
+  pushChange: 2000,
   crashShrink: 1,
-  crashScale: 5
+  shrinkInterval: 2000,
+  crashScale: 5,
 }
 
 //Screen interaction ---------------------------------------------------------------
@@ -98,14 +101,24 @@ document.getElementById("ball-size").onchange = function () {
     console.log ("ball-size "+params.ballSize);
     clearCanvas();
 };
-document.getElementById("push-factor").onchange = function () {
-    params.pushFactor = parseFloat(document.getElementById('push-factor').value);
-    console.log ("push-factor "+params.pushFactor);
+document.getElementById("push-amp").onchange = function () {
+    params.pushAmp = parseFloat(document.getElementById('push-amp').value);
+    console.log ("push-amp "+params.pushAmp);
     clearCanvas();
+};
+document.getElementById("push-change").onchange = function () {
+  params.pushChange = parseFloat(document.getElementById('push-change').value);
+  console.log ("push-amp "+params.pushChange);
+  clearCanvas();
 };
 document.getElementById("crash-shrink").onchange = function () {
   params.crashShrink = parseInt(document.getElementById('crash-shrink').value);
   console.log ("crash-shrink "+params.crashShrink);
+  clearCanvas();
+};
+document.getElementById("shrink-interval").onchange = function () {
+  params.shrinkInterval = parseInt(document.getElementById('shrink-interval').value);
+  console.log ("shrink-interval "+params.shrinkInterval);
   clearCanvas();
 };
 document.getElementById("crash-scale").onchange = function () {
@@ -160,6 +173,7 @@ function saveParams () {
     }
   }
 
+  console.log ("Send 2"+JSON.stringify(params));
   dynRequest.open ('POST', '/parsave', true);
   dynRequest.setRequestHeader("Accept", "application/json");
   dynRequest.setRequestHeader("Content-Type", "application/json");
@@ -180,16 +194,21 @@ function readParams () {
         params.ballSpeed = res.ballSpeed;
         params.numBalls = res.numBalls;
         params.ballSize = res.ballSize;
-        params.pushFactor = res.pushFactor;
+        params.pushAmp = res.pushAmp;
+        params.pushChange = res.pushChange;
         params.crashShrink = res.crashShrink;
+        params.shrinkInterval = res.shrinkInterval;
         params.crashScale = res.crashScale;
+        pushFactor = 1.0 - params.pushAmp;
 
         //Init drop down display
         document.getElementById("ball-speed").value = params.ballSpeed;
         document.getElementById("num-balls").value = res.numBalls;
         document.getElementById("ball-size").value = params.ballSize;
-        document.getElementById("push-factor").value = params.pushFactor;
+        document.getElementById("push-amp").value = params.pushAmp;
+        document.getElementById("push-change").value = params.pushChange;
         document.getElementById("crash-shrink").value = params.crashShrink;
+        document.getElementById("shrink-interval").value = params.shrinkInterval;
         document.getElementById("crash-scale").value = params.crashScale;
     }
   }
@@ -219,8 +238,16 @@ function drawToCanvas () {
   if (loopCount % 1000 == 0) {
     calculateEnergy();
   }
-  if (loopCount % 2000 == 0) {
+  if (loopCount % params.shrinkInterval == 0) {
     reduceCrashes();
+  }
+  if (loopCount % params.pushChange == 0) {
+    if (pushFactor>=1.0) {
+      pushFactor = 1.0 - params.pushAmp;
+    } else {
+      pushFactor = 1.0 + params.pushAmp;
+    }
+    console.log ("Push factor "+pushFactor);    
   }
 
   loopCount++;
@@ -312,7 +339,7 @@ function detectCollisions () {
         }
 
         //console.log("New speed "+speed);
-        let impulse = 2 * speed * params.pushFactor / (obj1.mass + obj2.mass);
+        let impulse = 2 * speed * pushFactor / (obj1.mass + obj2.mass);
         obj1.dx -= (impulse * obj2.mass * vCollisionNorm.x);
         obj1.dy -= (impulse * obj2.mass * vCollisionNorm.y);
         obj2.dx += (impulse * obj1.mass * vCollisionNorm.x);
@@ -340,10 +367,10 @@ function bounceOffWalls () {
   for (let i=0; i< balls.length; i++) {
     //console.log("bounce of ball "+i);
     if(balls[i].x + balls[i].dx > artCanvas.width-balls[i].rad || balls[i].x + balls[i].dx < balls[i].rad) {
-      balls[i].dx = -balls[i].dx * params.pushFactor;
+      balls[i].dx = -balls[i].dx * pushFactor;
     }
     if(balls[i].y + balls[i].dy > artCanvas.height-balls[i].rad || balls[i].y + balls[i].dy < balls[i].rad) {
-      balls[i].dy = -balls[i].dy * params.pushFactor;
+      balls[i].dy = -balls[i].dy * pushFactor;
     }   
   }
 }
