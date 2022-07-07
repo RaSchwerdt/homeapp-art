@@ -1,1 +1,1 @@
-{"file":"drawart01.txt","ballSpeed":40,"numBalls":20,"ballSize":15,"pushAmp":0.02,"pushChange":1500,"crashShrink":2,"shrinkInterval":1500,"crashScale":20}
+{"file":"drawart01.txt","ballSpeed":40,"numBalls":20,"ballSize":25,"pushAmp":0.05,"pushChange":500,"crashShrink":5,"shrinkInterval":1000,"crashScale":15}

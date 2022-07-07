@@ -148,7 +148,7 @@ function startLoop () {
         if (balls[i].y<balls[i].rad) {balls[i].y += balls[i].rad;}
         if (balls[i].y>artCanvas.height-balls[i].rad) {balls[i].y -= balls[i].rad;}
     }  
-    console.log ("ball0 x"+balls[0].x+" y "+balls[0].y+" dx "+balls[0].dx+" dy "+balls[0].dy+" rad "+balls[0].rad+" col "+balls[0].col);
+    //console.log ("ball0 x"+balls[0].x+" y "+balls[0].y+" dx "+balls[0].dx+" dy "+balls[0].dy+" rad "+balls[0].rad+" col "+balls[0].col);
   }
 
   if (loopInterval == null) {
@@ -169,11 +169,11 @@ function saveParams () {
   //Receive data
   dynRequest.onreadystatechange = function () {
     if (dynRequest.readyState==4 && dynRequest.status==200) {    
-        console.log ("Response "+dynRequest.responseText);
+        //console.log ("Response "+dynRequest.responseText);
     }
   }
 
-  console.log ("Send 2"+JSON.stringify(params));
+  //console.log ("Send 2"+JSON.stringify(params));
   dynRequest.open ('POST', '/parsave', true);
   dynRequest.setRequestHeader("Accept", "application/json");
   dynRequest.setRequestHeader("Content-Type", "application/json");
@@ -187,7 +187,7 @@ function readParams () {
   //Receive data
   dynRequest.onreadystatechange = function () {
     if (dynRequest.readyState==4 && dynRequest.status==200) {    
-        console.log ("Response "+dynRequest.responseText);
+        //console.log ("Response "+dynRequest.responseText);
         var res = JSON.parse(dynRequest.responseText);
 
         //Init param values
@@ -265,16 +265,21 @@ function drawBalls () {
 }
 
 function reduceCrashes () {
+  let cntReduce = 0;
+  let cntRemove = 0;
   //Remove crash size or remove crash
   for (let i=0; i < crashes.length; i++) {
     if (crashes[i].r - params.crashShrink <0) {
-        console.log ("Remove crash "+i);
+        //console.log ("Remove crash "+i);
+        cntRemove++;
         crashes.splice(i, 1); 
     } else {
         //console.log ("Reduce crash "+i);
+        cntReduce++;
         crashes[i].r = crashes[i].r - params.crashShrink;
     }
   }    
+  console.log ("Reduce "+cntReduce+" Remove "+cntRemove);
 }
 
 function drawCrashes () {
