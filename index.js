@@ -11,6 +11,7 @@ const app = express();
 app.set('view engine', 'ejs');
 
 //Local modules
+var filsto = require('./filestore.js');
 
 //Start reading index.html from directory start defined in properties file
 app.use(express.static(process.env.static));
@@ -21,12 +22,37 @@ app.get('/', function(req, res) {
   res.render('pages/index');
 });
 
+app.get('/parread', function(req, res) {
+  let fileName = req.url.slice(req.url.indexOf("=")+1, req.url.length);
+  console.log ("parread name="+fileName);
+  res.send(filsto.readObject(fileName));
+});
+
+
+app.post('/parsave', function(req, res) {
+  console.log ("save ");
+  var content = "";
+  req.on ("data", function (chunk){
+    content += chunk;
+    //console.log (JSON.parse(content));
+    //console.log (JSON.parse(content).file);
+    filsto.writeObject(JSON.parse(content).file, JSON.parse(content));
+  });
+
+
+  req.on ("end", function() {
+    res.writeHead(200, { "Content-Type": "text/html" });
+    res.end(content);
+  })
+});
+
 app.get ('/drawart01', function (req, res) {
   //let param = req.url.slice(req.url.indexOf("=")+1, req.url.length);
   console.log ("drawart01");
    //let scrptnm = 'scripts-fe/'+param+'.js';
    res.render ('pages/drawart01');
 }); 
+
 
 //Catch all requests which have no routing. identify IP
 app.get('*', function(req, res, next) {
@@ -51,5 +77,6 @@ app.get('*', function(req, res, next) {
 }});  
   
 app.listen(process.env.port, process.env.host);
+filsto.getStorageLocation(process.env.filestore);
 console.log('web server at port '+process.env.port+' host '+process.env.host+' is running..')
 }) ();

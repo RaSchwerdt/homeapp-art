@@ -1,0 +1,1 @@
+{"file":"drawart01.txt","ballSpeed":60,"numBalls":20,"ballSize":25,"pushFactor":1.02,"crashShrink":5,"crashScale":20}

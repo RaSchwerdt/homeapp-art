@@ -1,4 +1,5 @@
-//Constants
+//Constants ---------------------------------------------------------------
+const FILE_NAME = "drawart01.txt";
 const MAX_BALLS = 20;
 let loopInterval = null;
 let ball = {
@@ -46,74 +47,88 @@ let crashColors = [
 "#506775"
 ];
 let loopCount = 0;
+let params = {
+  file: FILE_NAME,
+  ballSpeed: 60,
+  numBalls: 10,
+  ballSize: 5,
+  pushFactor: 1.0,
+  crashShrink: 1,
+  crashScale: 5
+}
 
-//Event handling - screen interaction
+//Screen interaction ---------------------------------------------------------------
 let artCanvas = document.getElementById('art-canvas');
+artCanvas.setAttribute ('width', screen.availWidth/3);
+artCanvas.setAttribute ('height', screen.availHeight/3); 
 let ctx = artCanvas.getContext('2d');
+document.body.onload = function () {
+    readParams ();
+}
 document.getElementById("start-button").onclick = function () {
-    startLoop()
+    startLoop();
 };
 document.getElementById("stop-button").onclick = function () {
-    stopLoop()
+    stopLoop();
 };
 document.getElementById("clear-button").onclick = function () {
-    clearCanvas()
+    clearCanvas();
 };
-let parBallSpeed = 60;
+document.getElementById("full-button").onclick = function () {
+    artCanvas.requestFullscreen();
+  };
+document.getElementById("save-button").onclick = function () {
+    saveParams ();
+};
+document.getElementById("read-button").onclick = function () {
+  readParams ();
+};
 document.getElementById("ball-speed").onchange = function () {
-    parBallSpeed = parseInt(document.getElementById('ball-speed').value);
-    console.log ("ball-speed "+parBallSpeed);
+    params.ballSpeed = parseInt(document.getElementById('ball-speed').value);
+    console.log ("ball-speed "+params.ballSpeed);
     clearCanvas();
 };
-let parNumBalls = 10;
 document.getElementById("num-balls").onchange = function () {
-    parNumBalls = parseInt(document.getElementById('num-balls').value);
-    console.log ("num-balls "+parNumBalls);
+    params.numBalls = parseInt(document.getElementById('num-balls').value);
+    console.log ("num-balls "+params.numBalls);
     clearCanvas();
 };
-let parBallSize = 5;
 document.getElementById("ball-size").onchange = function () {
-    parBallSize = parseInt(document.getElementById('ball-size').value);
-    console.log ("ball-size "+parBallSize);
+    params.ballSize = parseInt(document.getElementById('ball-size').value);
+    console.log ("ball-size "+params.ballSize);
     clearCanvas();
 };
-let parPushFactor = 1.0;
 document.getElementById("push-factor").onchange = function () {
-    parPushFactor = parseFloat(document.getElementById('push-factor').value);
-    console.log ("push-factor "+parPushFactor);
+    params.pushFactor = parseFloat(document.getElementById('push-factor').value);
+    console.log ("push-factor "+params.pushFactor);
     clearCanvas();
 };
-let parCrashShrink = 1;
 document.getElementById("crash-shrink").onchange = function () {
-  parCrashShrink = parseInt(document.getElementById('crash-shrink').value);
-  console.log ("crash-shrink "+parCrashShrink);
+  params.crashShrink = parseInt(document.getElementById('crash-shrink').value);
+  console.log ("crash-shrink "+params.crashShrink);
   clearCanvas();
 };
-let parCrashScale = 5;
 document.getElementById("crash-scale").onchange = function () {
-  parCrashScale = parseInt(document.getElementById('crash-scale').value);
-  console.log ("crash-scale "+parCrashScale);
+  params.crashScale = parseInt(document.getElementById('crash-scale').value);
+  console.log ("crash-scale "+params.crashScale);
   clearCanvas();
 };
 
-
-
-//Functions
 function startLoop () {
   console.log("startLoop");
   if (balls.length==0) {
-    console.log ("Init balls "+parBallSize);
+    console.log ("Init balls "+params.ballSize);
   
-    for (let i=0; i< parNumBalls; i++) {
+    for (let i=0; i< params.numBalls; i++) {
       //console.log("ball "+i);
       balls[i] = new ball.init ( 
         Math.floor(Math.random()*artCanvas.width), 
         Math.floor(Math.random()*artCanvas.height),
         Math.floor(Math.random()*6)-3,
         Math.floor(Math.random()*4)-2,
-        parBallSize,
+        params.ballSize,
         "#0095DD",
-        parBallSize,
+        params.ballSize,
         )
         if (balls[i].x<balls[i].rad) {balls[i].x += balls[i].rad;}
         if (balls[i].x>artCanvas.width-balls[i].rad) {balls[i].x -= balls[i].rad;}
@@ -124,7 +139,7 @@ function startLoop () {
   }
 
   if (loopInterval == null) {
-    loopInterval = setInterval(drawToCanvas, parBallSpeed);  
+    loopInterval = setInterval(drawToCanvas, params.ballSpeed);  
   }
 
 }
@@ -135,6 +150,55 @@ function stopLoop () {
   loopInterval = null;
 }
 
+function saveParams () {
+  let dynRequest = new XMLHttpRequest();
+
+  //Receive data
+  dynRequest.onreadystatechange = function () {
+    if (dynRequest.readyState==4 && dynRequest.status==200) {    
+        console.log ("Response "+dynRequest.responseText);
+    }
+  }
+
+  dynRequest.open ('POST', '/parsave', true);
+  dynRequest.setRequestHeader("Accept", "application/json");
+  dynRequest.setRequestHeader("Content-Type", "application/json");
+  dynRequest.send(JSON.stringify(params));
+
+}
+
+function readParams () {
+  let dynRequest = new XMLHttpRequest();
+
+  //Receive data
+  dynRequest.onreadystatechange = function () {
+    if (dynRequest.readyState==4 && dynRequest.status==200) {    
+        console.log ("Response "+dynRequest.responseText);
+        var res = JSON.parse(dynRequest.responseText);
+
+        //Init param values
+        params.ballSpeed = res.ballSpeed;
+        params.numBalls = res.numBalls;
+        params.ballSize = res.ballSize;
+        params.pushFactor = res.pushFactor;
+        params.crashShrink = res.crashShrink;
+        params.crashScale = res.crashScale;
+
+        //Init drop down display
+        document.getElementById("ball-speed").value = params.ballSpeed;
+        document.getElementById("num-balls").value = res.numBalls;
+        document.getElementById("ball-size").value = params.ballSize;
+        document.getElementById("push-factor").value = params.pushFactor;
+        document.getElementById("crash-shrink").value = params.crashShrink;
+        document.getElementById("crash-scale").value = params.crashScale;
+    }
+  }
+
+  dynRequest.open ('GET', '/parread?file='+FILE_NAME, true);
+  dynRequest.send();
+}
+
+//Drawing ---------------------------------------------------------------
 function clearCanvas () {
     console.log("Clear canvas");
     ctx.clearRect(0, 0, artCanvas.width, artCanvas.height);
@@ -176,12 +240,12 @@ function drawBalls () {
 function reduceCrashes () {
   //Remove crash size or remove crash
   for (let i=0; i < crashes.length; i++) {
-    if (crashes[i].r - parCrashShrink <0) {
+    if (crashes[i].r - params.crashShrink <0) {
         console.log ("Remove crash "+i);
         crashes.splice(i, 1); 
     } else {
         //console.log ("Reduce crash "+i);
-        crashes[i].r = crashes[i].r - parCrashShrink;
+        crashes[i].r = crashes[i].r - params.crashShrink;
     }
   }    
 }
@@ -241,14 +305,14 @@ function detectCollisions () {
             break;
         }
 
-        let crashSize = Math.floor(speed*Math.floor(Math.random() * parCrashScale));
+        let crashSize = Math.floor(speed*Math.floor(Math.random() * params.crashScale));
         if (crashSize > 0) {
           //console.log ("Crash size "+crashSize+" i "+i+" j "+j);
           crashes.push (new crash.init(Math.floor(obj1.x), Math.floor(obj1.y), crashSize));  
         }
 
         //console.log("New speed "+speed);
-        let impulse = 2 * speed * parPushFactor / (obj1.mass + obj2.mass);
+        let impulse = 2 * speed * params.pushFactor / (obj1.mass + obj2.mass);
         obj1.dx -= (impulse * obj2.mass * vCollisionNorm.x);
         obj1.dy -= (impulse * obj2.mass * vCollisionNorm.y);
         obj2.dx += (impulse * obj1.mass * vCollisionNorm.x);
@@ -276,10 +340,10 @@ function bounceOffWalls () {
   for (let i=0; i< balls.length; i++) {
     //console.log("bounce of ball "+i);
     if(balls[i].x + balls[i].dx > artCanvas.width-balls[i].rad || balls[i].x + balls[i].dx < balls[i].rad) {
-      balls[i].dx = -balls[i].dx * parPushFactor;
+      balls[i].dx = -balls[i].dx * params.pushFactor;
     }
     if(balls[i].y + balls[i].dy > artCanvas.height-balls[i].rad || balls[i].y + balls[i].dy < balls[i].rad) {
-      balls[i].dy = -balls[i].dy * parPushFactor;
+      balls[i].dy = -balls[i].dy * params.pushFactor;
     }   
   }
 }
