@@ -10,7 +10,7 @@
         <div class="container">
             <h1>Computer Art - Push</h1>
             <div class="art-canvas">
-                <canvas id="art-canvas" style="background-color: #d7f0fd">
+                <canvas id="art-canvas" style="background-color: #135578">
                     Your browser does not support canvas
                 </canvas>    
             </div>
@@ -19,77 +19,85 @@
             <button id="clear-button" type="button" class="btn btn-secondary">Clear</button>
             <button id="full-button" type="button" class="btn btn-secondary">Full Screen</button>
             <div class="mb-3 row">
-                <label>Ball speed</label>
-                <select class="form-select form-select-sm" id="ball-speed">
-                    <option value="80">80</option>
-                    <option value="60">60</option>
-                    <option value="40">40</option>
-                    <option value="20">20</option>
-                    <option value="10">10</option>
+                <div class="col">
+                    <label>Ball speed</label>
+                    <select class="form-select form-select-sm" id="ball-speed">
+                        <option value="80">80</option>
+                        <option value="60">60</option>
+                        <option value="40">40</option>
+                        <option value="20">20</option>
+                        <option value="10">10</option>
                     </select>
-            </div> 
-            <div class="mb-3 row">
-                <label>Number of balls</label>
-                <select class="form-select form-select-sm" id="num-balls">
-                    <option value="10">10</option>
-                    <option value="15">15</option>
-                    <option value="20">20</option>
-                </select>
-            </div> 
-            <div class="mb-3 row">
-                <label>Ball size</label>
-                <select class="form-select form-select-sm" id="ball-size">
-                    <option value="5">5</option>
-                    <option value="10">10</option>
-                    <option value="15">15</option>
-                    <option value="25">25</option>
+                </div>
+                <div class="col">
+                    <label>Number of balls</label>
+                    <select class="form-select form-select-sm" id="num-balls">
+                        <option value="10">10</option>
+                        <option value="15">15</option>
+                        <option value="20">20</option>
                     </select>
+                </div> 
             </div> 
             <div class="mb-3 row">
-                <label>Push amplitude</label>
-                <select class="form-select form-select-sm" id="push-amp">
-                    <option value="0.0">0.0</option>
-                    <option value="0.01">0.01</option>
-                    <option value="0.02">0.02</option>
-                    <option value="0.05">0.05</option>
-                    <option value="0.1">0.1</option>
-                    <option value="0.2">0.2</option>
-                </select>
-            </div> 
-            <div class="mb-3 row">
-                <label>Push change interval</label>
-                <select class="form-select form-select-sm" id="push-change">
-                    <option value="2000">2000</option>
-                    <option value="1500">1500</option>
-                    <option value="1000">1000</option>
-                    <option value="500">500</option>
-                </select>
-            </div> 
-            <div class="mb-3 row">
-                <label>Crash shrink factor</label>
-                <select class="form-select form-select-sm" id="crash-shrink">
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="5">5</option>
+                <div class="col">
+                    <label>Ball size</label>
+                    <select class="form-select form-select-sm" id="ball-size">
+                        <option value="5">5</option>
+                        <option value="10">10</option>
+                        <option value="15">15</option>
+                        <option value="25">25</option>
                     </select>
-            </div> 
-            <div class="mb-3 row">
-                <label>Shrink interval</label>
-                <select class="form-select form-select-sm" id="shrink-interval">
-                    <option value="2000">2000</option>
-                    <option value="1500">1500</option>
-                    <option value="1000">1000</option>
-                    <option value="500">500</option>
-                </select>
-            </div> 
-            <div class="mb-3 row">
-                <label>Crash scale factor</label>
-                <select class="form-select form-select-sm" id="crash-scale">
-                    <option value="5">5</option>
-                    <option value="10">10</option>
-                    <option value="15">15</option>
-                    <option value="20">20</option>
+                </div>
+                <div class="col">
+                    <label>Push amplitude</label>
+                    <select class="form-select form-select-sm" id="push-amp">
+                        <option value="0.0">0.0</option>
+                        <option value="0.01">0.01</option>
+                        <option value="0.02">0.02</option>
+                        <option value="0.05">0.05</option>
+                        <option value="0.1">0.1</option>
+                        <option value="0.2">0.2</option>
                     </select>
+                </div> 
+            </div> 
+            <div class="mb-3 row">
+                <div class="col">
+                    <label>Push change interval</label>
+                    <select class="form-select form-select-sm" id="push-change">
+                        <option value="2000">2000</option>
+                        <option value="1500">1500</option>
+                        <option value="1000">1000</option>
+                        <option value="500">500</option>
+                    </select>
+                </div>
+                <div class="col">
+                    <label>Crash shrink factor</label>
+                    <select class="form-select form-select-sm" id="crash-shrink">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="5">5</option>
+                    </select>
+                </div> 
+            </div> 
+            <div class="mb-3 row">
+                <div class="col">
+                    <label>Shrink interval</label>
+                    <select class="form-select form-select-sm" id="shrink-interval">
+                        <option value="2000">2000</option>
+                        <option value="1500">1500</option>
+                        <option value="1000">1000</option>
+                        <option value="500">500</option>
+                    </select>
+                </div>
+                <div class="col">
+                    <label>Crash scale factor</label>
+                    <select class="form-select form-select-sm" id="crash-scale">
+                        <option value="5">5</option>
+                        <option value="10">10</option>
+                        <option value="15">15</option>
+                        <option value="20">20</option>
+                        </select>
+                </div> 
             </div> 
             <button id="read-button" type="button" class="btn btn-primary">Read</button>
             <button id="save-button" type="button" class="btn btn-primary">Save</button>
