@@ -1,7 +1,7 @@
 //Constants ---------------------------------------------------------------
 const FILE_NAME = "drawart01.txt";
-const MAX_BALLS = 20;
 let loopInterval = null;
+let loopCount = 0;
 let ball = {
   x: 0,
   y: 0,
@@ -46,7 +46,6 @@ let crashColors = [
 "#426b84",
 "#506775"
 ];
-let loopCount = 0;
 let pushFactor = 1.0;
 let params = {
   file: FILE_NAME,

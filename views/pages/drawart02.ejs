@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('../partials/head') %>
+</head>
+    <body>
+        <div class="container">
+            <h1>Computer Art - Gravity</h1>
+            <%- include('../partials/canvas') %>
+            <%- include('../partials/buttons-canvas') %>
+            <div class="mb-3 row">
+                <div class="col">
+                    <label>Speed</label>
+                    <select class="form-select form-select-sm" id="speed">
+                        <option value="2000">2000</option>
+                        <option value="1000">1000</option>
+                        <option value="500">500</option>
+                        <option value="200">200</option>
+                        <option value="100">100</option>
+                    </select>
+                </div>
+                <div class="col">
+                    <label>Number of parts</label>
+                    <select class="form-select form-select-sm" id="num-parts">
+                        <option value="10">10</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                        <option value="200">200</option>
+                        <option value="500">500</option>
+                    </select>
+                </div> 
+            </div> 
+            <div class="mb-3 row">
+                <div class="col">
+                    <label>Part size</label>
+                    <select class="form-select form-select-sm" id="part-size">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="5">5</option>
+                    </select>
+                </div>
+                <div class="col">
+                    <label>Impact factor</label>
+                    <select class="form-select form-select-sm" id="impact-factor">
+                        <option value="0.99">0.99</option>
+                        <option value="0.5">0.5</option>
+                        <option value="0.2">0.2</option>
+                    </select>
+                </div>
+            </div> 
+            <div class="mb-3 row">
+                <div class="col">
+                    <label>Part size</label>
+                    <select class="form-select form-select-sm" id="clear-trace">
+                        <option value="0">0</option>
+                        <option value="1">1</option>
+                    </select>
+                </div>
+            </div> 
+            <%- include('../partials/buttons-params') %>
+        </div>
+        <script src="scripts/bootstrap.min.js"></script>
+        <script src="scripts/drawart02.js"></script>
+    </body>
+</html>

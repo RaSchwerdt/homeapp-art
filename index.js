@@ -49,10 +49,13 @@ app.post('/parsave', function(req, res) {
 app.get ('/drawart01', function (req, res) {
   //let param = req.url.slice(req.url.indexOf("=")+1, req.url.length);
   console.log ("drawart01");
-   let canvasBackColor = "background-color: #386388";
-   res.render ('pages/drawart01');
+  res.render ('pages/drawart01');
 }); 
 
+app.get ('/drawart02', function (req, res) {
+  console.log ("drawart02");
+  res.render ('pages/drawart02');
+}); 
 
 //Catch all requests which have no routing. identify IP
 app.get('*', function(req, res, next) {
