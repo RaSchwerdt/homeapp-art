@@ -13,12 +13,16 @@ let params = {
 let part = {
     x: 0,
     y: 0,
+    dx: 0,
+    dy: 0,
     rad: 0,
     col: null,
     mass: 0,
-    init: function (x, y, rad, col, mass) {
+    init: function (x, y, dx, dy, rad, col, mass) {
       this.x = x;
       this.y = y;
+      this.dx = dx;
+      this.dy = dy;
       this.rad = rad;
       this.col = col;
       this.mass = mass;
@@ -90,6 +94,8 @@ function startLoop () {
             parts[i] = new part.init ( 
             Math.floor(Math.random()*artCanvas.width), 
             Math.floor(Math.random()*artCanvas.height),
+            0,
+            0,
             params.partSize,
             "#0095DD",
             params.partSize*3,
@@ -176,9 +182,11 @@ function drawToCanvas () {
   if (params.clearTrace==1) {
     ctx.clearRect(0, 0, artCanvas.width, artCanvas.height);
   }
-  calculateMoves();
   drawParts();
+  calculateVelocities();
+  moveParts();
 
+  
   loopCount++;
 }
 
@@ -194,45 +202,77 @@ function drawParts () {
     
 }
 
-function calculateMoves () {
+function calculateVelocities () {
   
-    for (let i=0; i< parts.length; i++) {
-      let obj1 = parts[i];
-      //console.log ("obj1 x "+obj1.x+" y "+obj1.y);
+  for (let i=0; i< parts.length; i++) {
+    let obj1 = parts[i];
+    //console.log ("obj1 x "+obj1.x+" y "+obj1.y);
 
-      for (let j=i+1; j< parts.length; j++) {
-        let obj2 = parts[j];
-        //console.log ("obj2 x "+obj2.x+" y "+obj2.y)
+    for (let j=i+1; j< parts.length; j++) {
+      let obj2 = parts[j];
+      //console.log ("obj2 x "+obj2.x+" y "+obj2.y)
 
-        //Calulate distance
-        let distance = Math.sqrt((obj2.x-obj1.x)*(obj2.x-obj1.x) + (obj2.y-obj1.y)*(obj2.y-obj1.y));
-        if (distance<=obj1.rad) {
-          //parts crashed - create one bigger part
-          obj1.rad += obj2.rad;
-          obj1.mass += obj2.mass;
+      //Calulate distance
+      let distance = Math.sqrt((obj2.x-obj1.x)*(obj2.x-obj1.x) + (obj2.y-obj1.y)*(obj2.y-obj1.y));
+      if (distance<=obj1.rad) {
+        //parts crashed - create one bigger part
+        obj1.rad += obj2.rad;
+        obj1.mass += obj2.mass;
+        obj1.dx += obj2.mass*(obj1.x-obj2.x);
+        obj1.dy += obj2.mass*(obj1.y-obj2.y);
 
-          //Remove the other
-          parts.splice(j,1);
-        }
-        else {
-          let moveFactor = obj1.mass * obj2.mass / Math.pow(distance, 2);
-          //console.log("Distance "+distance+" Factor "+moveFactor);
-  
-          //New part position
-          if(obj1.rad>obj2.rad) {
-            obj2.x += moveFactor*(obj1.x-obj2.x);
-            obj2.y += moveFactor*(obj1.y-obj2.y);  
-          } else {
-            obj1.x += moveFactor*(obj2.x-obj1.x);
-            obj1.y += moveFactor*(obj2.y-obj1.y);  
-          }
-          //console.log ("after move obj1 x "+obj1.x+" y "+obj1.y);
-  
-        }
+        //Remove the other
+        parts.splice(j,1);
+      }
+      else {
+        let moveFactor = obj1.mass * obj2.mass / Math.pow(distance, 2);
+        //console.log("Distance "+distance+" Factor "+moveFactor);
+        obj1.dx += obj1.mass*(obj2.x-obj1.x) / Math.pow(distance, 2);
+        obj1.dy += obj1.mass*(obj2.y-obj1.y) / Math.pow(distance, 2);  
+
+        obj2.dx += obj2.mass*(obj1.x-obj2.x) / Math.pow(distance, 2);
+        obj2.dy += obj2.mass*(obj1.y-obj2.y) / Math.pow(distance, 2);  
+
+
+        //New part position
+        /*
+        if(obj1.rad>obj2.rad) {
+          obj2.dx += moveFactor*(obj1.x-obj2.x);
+          obj2.dy += moveFactor*(obj1.y-obj2.y);  
+        } else {
+          obj1.dx += moveFactor*(obj2.x-obj1.x);
+          obj1.dy += moveFactor*(obj2.y-obj1.y);  
+        }*/
+        //console.log ("after move obj1 x "+obj1.x+" y "+obj1.y);
 
       }
-      //console.log ("after move obj1 x "+obj1.x+" y "+obj1.y);
+
     }
-  
+    //console.log ("after move obj1 x "+obj1.x+" y "+obj1.y);
   }
+}
+
+function moveParts () {
+  for (let i=0; i< parts.length; i++) {
+    let leftSpace = false;
+    if (parts[i].x <0) {
+      leftSpace = true;
+    } else if (parts[i].x>artCanvas.width) {
+      leftSpace = true;
+    } else if (parts[i].y <0) {
+      leftSpace = true;
+    } else if (parts[i].y>artCanvas.height) {
+      leftSpace = true;
+    }
+
+    if (leftSpace == true) {
+      //part has left the dsiplay space
+      parts.splice(i,1);
+    } else {
+      parts[i].x += parts[i].dx;
+      parts[i].y += parts[i].dy;  
+    }
+  }
+}
+
   
