@@ -1,23 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" >
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
-<title>Homeapp-Art</title>
+    <%- include('../partials/head') %>
 </head>
     <body>
         <div class="container">
             <h1>Computer Art - Push</h1>
-            <div class="art-canvas">
-                <canvas id="art-canvas" style="background-color: #135578">
-                    Your browser does not support canvas
-                </canvas>    
-            </div>
-            <button id="start-button" type="button" class="btn btn-secondary">Start</button>
-            <button id="stop-button" type="button" class="btn btn-secondary">Stop</button>
-            <button id="clear-button" type="button" class="btn btn-secondary">Clear</button>
-            <button id="full-button" type="button" class="btn btn-secondary">Full Screen</button>
+            <%- include('../partials/canvas') %>
+            <%- include('../partials/buttons-canvas') %>
             <div class="mb-3 row">
                 <div class="col">
                     <label>Ball speed</label>
@@ -99,9 +89,7 @@
                         </select>
                 </div> 
             </div> 
-            <button id="read-button" type="button" class="btn btn-primary">Read</button>
-            <button id="save-button" type="button" class="btn btn-primary">Save</button>
-            <a href="/" type="button" class="btn btn-primary">Back</a>
+            <%- include('../partials/buttons-params') %>
         </div>       
         <script src="scripts/bootstrap.min.js"></script>
         <script src="scripts/drawart01.js"></script>

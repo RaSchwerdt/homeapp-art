@@ -49,7 +49,7 @@ app.post('/parsave', function(req, res) {
 app.get ('/drawart01', function (req, res) {
   //let param = req.url.slice(req.url.indexOf("=")+1, req.url.length);
   console.log ("drawart01");
-   //let scrptnm = 'scripts-fe/'+param+'.js';
+   let canvasBackColor = "background-color: #386388";
    res.render ('pages/drawart01');
 }); 
 

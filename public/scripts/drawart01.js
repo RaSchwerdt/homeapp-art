@@ -64,6 +64,7 @@ let params = {
 let artCanvas = document.getElementById('art-canvas');
 artCanvas.setAttribute ('width', screen.availWidth/3);
 artCanvas.setAttribute ('height', screen.availHeight/3); 
+artCanvas.style.backgroundColor= '#386388';
 let ctx = artCanvas.getContext('2d');
 document.body.onload = function () {
     readParams ();
@@ -311,10 +312,10 @@ function detectCollisions () {
   }
 
   for (let i=0; i< balls.length; i++) {
-    obj1 = balls[i];
+    let obj1 = balls[i];
     //console.log ("obj1 x, y, rad"+obj1.x+", "+obj1.y+", "+obj1.rad)
     for (let j=i+1; j< balls.length; j++) {
-      obj2 = balls[j];
+      let obj2 = balls[j];
       //console.log ("obj2 x, y, rad"+obj2.x+", "+obj2.y+", "+obj2.rad)
       if (circleIntersect(obj1.x, obj1.y, obj1.rad, obj2.x, obj2.y, obj2.rad)) {
         //console.log("collsion detect at "+obj1.x+" i "+i+" j "+j)
@@ -384,7 +385,7 @@ function calculateEnergy () {
   let totalEnergy = 0.0;
   for (let i=0; i< balls.length; i++) {
     //console.log("move ball "+i);
-    vel = Math.sqrt(balls[i].dx*balls[i].dx + balls[i].dy*balls[i].dy);
+    let vel = Math.sqrt(balls[i].dx*balls[i].dx + balls[i].dy*balls[i].dy);
     totalEnergy += vel*vel*balls[i].mass/2;
   }
   console.log("Total energy "+totalEnergy);
