@@ -18,17 +18,30 @@ let part = {
     rad: 0,
     col: null,
     mass: 0,
-    init: function (x, y, dx, dy, rad, col, mass) {
+    init: function (x, y, dx, dy, rad, mass) {
       this.x = x;
       this.y = y;
       this.dx = dx;
       this.dy = dy;
       this.rad = rad;
-      this.col = col;
+      this.col = partColors[Math.floor(Math.random() * partColors.length)];
       this.mass = mass;
     },
   };
   let parts = [];
+  let partColors = [
+    "#4b7f9d",
+    "#6898b4",
+    "#8cb8d3",
+    "#4292c2",
+    "#289bdf",
+    "#7fcaf6",
+    "#81c2e8",
+    "#5f7f92",
+    "#426b84",
+    "#506775"
+    ];
+    
   
 
 //Screen interaction ---------------------------------------------------------------
@@ -97,7 +110,6 @@ function startLoop () {
             0,
             0,
             params.partSize,
-            "#0095DD",
             params.partSize*3,
             )
             if (parts[i].x<parts[i].rad) {parts[i].x += parts[i].rad;}
@@ -215,11 +227,11 @@ function calculateVelocities () {
       //Calulate distance
       let distance = Math.sqrt((obj2.x-obj1.x)*(obj2.x-obj1.x) + (obj2.y-obj1.y)*(obj2.y-obj1.y));
       if (distance<=obj1.rad) {
-        //parts crashed - create one bigger part
+        //parts crashed - create one bigger part velocity decreases because of deformation (*0.5)
         obj1.rad += obj2.rad;
         obj1.mass += obj2.mass;
-        obj1.dx += obj2.mass*(obj1.x-obj2.x);
-        obj1.dy += obj2.mass*(obj1.y-obj2.y);
+        obj1.dx = (obj1.dx+obj2.mass*(obj1.x-obj2.x))*0.5;
+        obj1.dy = (obj1.dy+obj2.mass*(obj1.y-obj2.y))*0.5;
 
         //Remove the other
         parts.splice(j,1);
@@ -227,24 +239,13 @@ function calculateVelocities () {
       else {
         let moveFactor = obj1.mass * obj2.mass / Math.pow(distance, 2);
         //console.log("Distance "+distance+" Factor "+moveFactor);
+        
+        //Spped change considering object mass
         obj1.dx += obj1.mass*(obj2.x-obj1.x) / Math.pow(distance, 2);
         obj1.dy += obj1.mass*(obj2.y-obj1.y) / Math.pow(distance, 2);  
 
         obj2.dx += obj2.mass*(obj1.x-obj2.x) / Math.pow(distance, 2);
         obj2.dy += obj2.mass*(obj1.y-obj2.y) / Math.pow(distance, 2);  
-
-
-        //New part position
-        /*
-        if(obj1.rad>obj2.rad) {
-          obj2.dx += moveFactor*(obj1.x-obj2.x);
-          obj2.dy += moveFactor*(obj1.y-obj2.y);  
-        } else {
-          obj1.dx += moveFactor*(obj2.x-obj1.x);
-          obj1.dy += moveFactor*(obj2.y-obj1.y);  
-        }*/
-        //console.log ("after move obj1 x "+obj1.x+" y "+obj1.y);
-
       }
 
     }

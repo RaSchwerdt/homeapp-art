@@ -57,6 +57,11 @@ app.get ('/drawart02', function (req, res) {
   res.render ('pages/drawart02');
 }); 
 
+app.get ('/drawart03', function (req, res) {
+  console.log ("drawart03");
+  res.render ('pages/drawart03');
+}); 
+
 //Catch all requests which have no routing. identify IP
 app.get('*', function(req, res, next) {
     let err = new Error(`${req.ip} tried to reach ${req.originalUrl}`); // Tells us which IP tried to reach a particular URL

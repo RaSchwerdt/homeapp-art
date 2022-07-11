@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('../partials/head') %>
+</head>
+    <body>
+        <div class="container">
+            <h1>Computer Art - Gravity Planetes</h1>
+            <%- include('../partials/canvas') %>
+            <%- include('../partials/buttons-canvas') %>
+            <div class="mb-3 row">
+                <div class="col">
+                    <label>Simulation speed</label>
+                    <select class="form-select form-select-sm" id="simulation-speed">
+                        <option value="2000">2000</option>
+                        <option value="1000">1000</option>
+                        <option value="500">500</option>
+                        <option value="200">200</option>
+                        <option value="100">100</option>
+                    </select>
+                </div>
+            </div> 
+            <div class="mb-3 row">
+                <div class="col">
+                    <label>Central gravity</label>
+                    <select class="form-select form-select-sm" id="central-gravity">
+                        <option value="20">20</option>
+                        <option value="10">10</option>
+                        <option value="5">5</option>
+                    </select>
+                </div>
+                <div class="col">
+                    <label>Asteroid speed</label>
+                    <select class="form-select form-select-sm" id="asteroid-speed">
+                        <option value="10">10</option>
+                        <option value="20">20</option>
+                        <option value="50">50</option>
+                    </select>
+                </div> 
+            </div> 
+            <%- include('../partials/buttons-params') %>
+        </div>
+        <script src="scripts/bootstrap.min.js"></script>
+        <script src="scripts/drawart03.js"></script>
+    </body>
+</html>
