@@ -5,7 +5,7 @@
 </head>
     <body>
         <div class="container">
-            <h1>Computer Art - Gravity Planetes</h1>
+            <h1>Computer Art - Gravity Asteroids</h1>
             <%- include('../partials/canvas') %>
             <%- include('../partials/buttons-canvas') %>
             <div class="mb-3 row">
@@ -19,6 +19,14 @@
                         <option value="100">100</option>
                     </select>
                 </div>
+                <div class="col">
+                    <label>Asteroid appearance</label>
+                    <select class="form-select form-select-sm" id="asteroid-appearance">
+                        <option value="50">50</option>
+                        <option value="20">20</option>
+                        <option value="10">10</option>
+                    </select>
+                </div>
             </div> 
             <div class="mb-3 row">
                 <div class="col">
@@ -30,13 +38,22 @@
                     </select>
                 </div>
                 <div class="col">
-                    <label>Asteroid speed</label>
-                    <select class="form-select form-select-sm" id="asteroid-speed">
-                        <option value="10">10</option>
-                        <option value="20">20</option>
-                        <option value="50">50</option>
+                    <label>Asteroid size</label>
+                    <select class="form-select form-select-sm" id="asteroid-size">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="5">5</option>
                     </select>
                 </div> 
+            </div> 
+            <div class="mb-3 row">
+                <div class="col">
+                    <label>Clear trace</label>
+                    <select class="form-select form-select-sm" id="clear-trace">
+                        <option value="0">0</option>
+                        <option value="1">1</option>
+                    </select>
+                </div>
             </div> 
             <%- include('../partials/buttons-params') %>
         </div>

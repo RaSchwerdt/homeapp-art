@@ -237,9 +237,6 @@ function calculateVelocities () {
         parts.splice(j,1);
       }
       else {
-        let moveFactor = obj1.mass * obj2.mass / Math.pow(distance, 2);
-        //console.log("Distance "+distance+" Factor "+moveFactor);
-        
         //Spped change considering object mass
         obj1.dx += obj1.mass*(obj2.x-obj1.x) / Math.pow(distance, 2);
         obj1.dy += obj1.mass*(obj2.y-obj1.y) / Math.pow(distance, 2);  
