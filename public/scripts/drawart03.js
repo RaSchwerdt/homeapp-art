@@ -1,5 +1,6 @@
 //Constants ---------------------------------------------------------------
 const FILE_NAME = "drawart03.txt";
+const MASS_FACTOR = 5;
 let loopInterval = null;
 let loopCount = 0;
 let params = {
@@ -11,19 +12,23 @@ let params = {
     clearTrace: 0,
 }
 let gravityField = {
-    orgx: 0,
-    orgy: 0,
-    rad: 0,
-    mass: 0,
-    col: null,
-    init: function (x, y, rad) {
-      this.x = x;
-      this.y = y;
-      this.rad = rad;
-      this.mass = rad*10;
-      this.col = "#2f2f2f";
-    },
-};
+  x: 0,
+  y: 0,
+  a: 0, //angle in radians 0-360
+  dist: 0, //distance from center
+  da: 0, //angle velocity in radians 0-360
+  rad: 0, //size of planet
+  mass: 0,
+  col: null,
+  init: function (a, dist, da, rad) {
+    this.a = a;
+    this.dist = dist;
+    this.da = da;
+    this.rad = rad;
+    this.mass = rad*MASS_FACTOR;
+    this.col = "#2f2f2f";
+  },
+}
 let gravityFields = [];
 let asteroid = {
   x: 0,
@@ -113,7 +118,19 @@ function startLoop () {
     console.log("startLoop");
 
     //Create the gravity field
-    gravityFields.push(new gravityField.init(artCanvas.width/2, artCanvas.height/2, params.centralGravity));
+    //gravityFields.push(new gravityField.init(artCanvas.width/2, artCanvas.height/2, params.centralGravity));
+    gravityFields[0] = new gravityField.init(0, 0, 0, params.centralGravity);
+    gravityFields[0].x = artCanvas.width/2 + gravityFields[0].dist * Math.cos(gravityFields[0].a);
+    gravityFields[0].y = artCanvas.height/2 + gravityFields[0].dist * Math.sin(gravityFields[0].a);
+    gravityFields[1] = new gravityField.init(0, 50, 5, params.centralGravity-10);
+    gravityFields[1].x = artCanvas.width/2 + gravityFields[1].dist * Math.cos(gravityFields[1].a);
+    gravityFields[1].y = artCanvas.height/2 + gravityFields[1].dist * Math.sin(gravityFields[1].a);
+    gravityFields[2] = new gravityField.init(0, 100, 3, params.centralGravity-8);
+    gravityFields[2].x = artCanvas.width/2 + gravityFields[1].dist * Math.cos(gravityFields[1].a);
+    gravityFields[2].y = artCanvas.height/2 + gravityFields[1].dist * Math.sin(gravityFields[1].a);
+    gravityFields[3] = new gravityField.init(0, 200, 1, params.centralGravity-2);
+    gravityFields[3].x = artCanvas.width/2 + gravityFields[1].dist * Math.cos(gravityFields[1].a);
+    gravityFields[3].y = artCanvas.height/2 + gravityFields[1].dist * Math.sin(gravityFields[1].a);
 
     //Create asteroid
     addAsteroid();
@@ -196,6 +213,7 @@ function drawToCanvas () {
   drawGravityFields();
   drawAsteroids();
   calculateAsteroidVelocity();
+  moveGravityFields();
   moveAsteroids();
   if (loopCount % params.asteroidAppearance == 0) {
     addAsteroid();
@@ -205,17 +223,6 @@ function drawToCanvas () {
   //console.log("Loop count "+loopCount+"Asteroid appearance "+params.asteroidAppearance);
 }
 
-function drawAsteroids () {
-  for (let i=0; i< asteroids.length; i++) {
-      //console.log("draw asteroid "+i+" x "+asteroids[i].x+" y "+asteroids[i].y+" rad "+asteroids[i].rad+" col "+asteroids[i].col);
-      ctx.beginPath();
-      ctx.arc(asteroids[i].x, asteroids[i].y, asteroids[i].rad, 0, Math.PI*2);
-      ctx.fillStyle = asteroids[i].col;
-      ctx.fill();
-      ctx.closePath();  
-  }
-  
-}
 
 function drawGravityFields () {
   for (let i=0; i< gravityFields.length; i++) {
@@ -223,6 +230,29 @@ function drawGravityFields () {
       ctx.beginPath();
       ctx.arc(gravityFields[i].x, gravityFields[i].y, gravityFields[i].rad, 0, Math.PI*2);
       ctx.fillStyle = gravityFields[i].col;
+      ctx.fill();
+      ctx.closePath();  
+  }
+  
+}
+
+function moveGravityFields () {
+  for (let i=0; i< gravityFields.length; i++) {
+    gravityFields[i].a += gravityFields[i].da;
+    if (gravityFields[i].a>360) {
+      gravityFields[i].a -= 360;
+    }
+    gravityFields[i].x = artCanvas.width/2 + gravityFields[i].dist * Math.cos(gravityFields[i].a*2*Math.PI/360);
+    gravityFields[i].y = artCanvas.height/2 + gravityFields[i].dist * Math.sin(gravityFields[i].a*2*Math.PI/360);
+  }
+}
+
+function drawAsteroids () {
+  for (let i=0; i< asteroids.length; i++) {
+      //console.log("draw asteroid "+i+" x "+asteroids[i].x+" y "+asteroids[i].y+" rad "+asteroids[i].rad+" col "+asteroids[i].col);
+      ctx.beginPath();
+      ctx.arc(asteroids[i].x, asteroids[i].y, asteroids[i].rad, 0, Math.PI*2);
+      ctx.fillStyle = asteroids[i].col;
       ctx.fill();
       ctx.closePath();  
   }

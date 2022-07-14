@@ -1,1 +1,1 @@
-{"file":"drawart03.txt","simulationSpeed":500,"asteroidAppearance":50,"centralGravity":10,"asteroidSize":2,"clearTrace":0}
+{"file":"drawart03.txt","simulationSpeed":100,"asteroidAppearance":50,"centralGravity":15,"asteroidSize":2,"clearTrace":1}
