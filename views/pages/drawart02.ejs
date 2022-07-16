@@ -10,53 +10,32 @@
             <%- include('../partials/buttons-canvas') %>
             <div class="mb-3 row">
                 <div class="col">
-                    <label>Speed</label>
-                    <select class="form-select form-select-sm" id="speed">
-                        <option value="2000">2000</option>
-                        <option value="1000">1000</option>
-                        <option value="500">500</option>
-                        <option value="200">200</option>
-                        <option value="100">100</option>
-                    </select>
+                    <label>Simulation speed 100-2000</label>
+                    <span id="simulation-speed-value" style="color:red;"></span>
+                    <input type="range" class="form-range" min="100" max="2000" step="50" id="simulation-speed">
                 </div>
                 <div class="col">
-                    <label>Number of parts</label>
-                    <select class="form-select form-select-sm" id="num-parts">
-                        <option value="10">10</option>
-                        <option value="50">50</option>
-                        <option value="100">100</option>
-                        <option value="200">200</option>
-                        <option value="500">500</option>
-                    </select>
+                    <label>Number of parts 10-500</label>
+                    <span id="num-parts-value" style="color:red;"></span>
+                    <input type="range" class="form-range" min="50" max="500" step="50" id="num-parts">
                 </div> 
             </div> 
             <div class="mb-3 row">
                 <div class="col">
-                    <label>Part size</label>
-                    <select class="form-select form-select-sm" id="part-size">
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="5">5</option>
-                    </select>
+                    <label>Part size 1-10</label>
+                    <span id="part-size-value" style="color:red;"></span>
+                    <input type="range" class="form-range" min="1" max="10" step="1" id="part-size">
                 </div>
                 <div class="col">
                     <label>Impact factor</label>
-                    <select class="form-select form-select-sm" id="impact-factor">
-                        <option value="0.99">0.99</option>
-                        <option value="0.5">0.5</option>
-                        <option value="0.2">0.2</option>
-                    </select>
+                    <span id="impact-factor-value" style="color:red;"></span>
+                    <input type="range" class="form-range" min="0.1" max="0.9" step="0.1" id="impact-factor">
                 </div>
             </div> 
-            <div class="mb-3 row">
-                <div class="col">
-                    <label>Clear trace</label>
-                    <select class="form-select form-select-sm" id="clear-trace">
-                        <option value="0">0</option>
-                        <option value="1">1</option>
-                    </select>
-                </div>
-            </div> 
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="clear-trace">
+                <label class="form-check-label" for="clear-trace">Clear trace</label>    
+            </div>
             <%- include('../partials/buttons-params') %>
         </div>
         <script src="scripts/bootstrap.min.js"></script>

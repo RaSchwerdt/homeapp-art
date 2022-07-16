@@ -49,7 +49,7 @@ let crashColors = [
 let pushFactor = 1.0;
 let params = {
   file: FILE_NAME,
-  ballSpeed: 80,
+  simulationSpeed: 80,
   numBalls: 10,
   ballSize: 5,
   pushAmp: 0.0,
@@ -86,44 +86,52 @@ document.getElementById("save-button").onclick = function () {
 document.getElementById("read-button").onclick = function () {
   readParams ();
 };
-document.getElementById("ball-speed").onchange = function () {
-    params.ballSpeed = parseInt(document.getElementById('ball-speed').value);
-    console.log ("ball-speed "+params.ballSpeed);
+document.getElementById("simulation-speed").oninput = function () {
+    params.simulationSpeed = parseInt(document.getElementById('simulation-speed').value);
+    document.getElementById("simulation-speed-value").innerHTML = "("+params.simulationSpeed+")";
+    //console.log ("simulation-speed "+params.simulationSpeed);
     clearCanvas();
 };
-document.getElementById("num-balls").onchange = function () {
+document.getElementById("num-balls").oninput = function () {
     params.numBalls = parseInt(document.getElementById('num-balls').value);
-    console.log ("num-balls "+params.numBalls);
+    document.getElementById("num-balls-value").innerHTML = "("+params.numBalls+")";
+    //console.log ("num-balls "+params.numBalls);
     clearCanvas();
 };
-document.getElementById("ball-size").onchange = function () {
+document.getElementById("ball-size").oninput = function () {
     params.ballSize = parseInt(document.getElementById('ball-size').value);
-    console.log ("ball-size "+params.ballSize);
+    document.getElementById("ball-size-value").innerHTML = "("+params.ballSize+")";
+    //console.log ("ball-size "+params.ballSize);
     clearCanvas();
 };
-document.getElementById("push-amp").onchange = function () {
+document.getElementById("push-amp").oninput = function () {
     params.pushAmp = parseFloat(document.getElementById('push-amp').value);
-    console.log ("push-amp "+params.pushAmp);
+    document.getElementById("push-amp-value").innerHTML = "("+params.pushAmp+")";
+    //console.log ("push-amp "+params.pushAmp);
     clearCanvas();
 };
-document.getElementById("push-change").onchange = function () {
+document.getElementById("push-change").oninput = function () {
   params.pushChange = parseFloat(document.getElementById('push-change').value);
-  console.log ("push-amp "+params.pushChange);
+  document.getElementById("push-change-value").innerHTML = "("+params.pushChange+")";
+  //console.log ("push-change "+params.pushChange);
   clearCanvas();
 };
-document.getElementById("crash-shrink").onchange = function () {
+document.getElementById("crash-shrink").oninput = function () {
   params.crashShrink = parseInt(document.getElementById('crash-shrink').value);
-  console.log ("crash-shrink "+params.crashShrink);
+  document.getElementById("crash-shrink-value").innerHTML = "("+params.crashShrink+")";
+  //console.log ("crash-shrink "+params.crashShrink);
   clearCanvas();
 };
-document.getElementById("shrink-interval").onchange = function () {
+document.getElementById("shrink-interval").oninput = function () {
   params.shrinkInterval = parseInt(document.getElementById('shrink-interval').value);
-  console.log ("shrink-interval "+params.shrinkInterval);
+  document.getElementById("shrink-interval-value").innerHTML = "("+params.shrinkInterval+")";
+  //console.log ("shrink-interval "+params.shrinkInterval);
   clearCanvas();
 };
-document.getElementById("crash-scale").onchange = function () {
+document.getElementById("crash-scale").oninput = function () {
   params.crashScale = parseInt(document.getElementById('crash-scale').value);
-  console.log ("crash-scale "+params.crashScale);
+  document.getElementById("crash-scale-value").innerHTML = "("+params.crashScale+")";
+  //console.log ("crash-scale "+params.crashScale);
   clearCanvas();
 };
 
@@ -152,7 +160,7 @@ function startLoop () {
   }
 
   if (loopInterval == null) {
-    loopInterval = setInterval(drawToCanvas, params.ballSpeed);  
+    loopInterval = setInterval(drawToCanvas, params.simulationSpeed);  
   }
 
 }
@@ -191,7 +199,7 @@ function readParams () {
         var res = JSON.parse(dynRequest.responseText);
 
         //Init param values
-        params.ballSpeed = res.ballSpeed;
+        params.simulationSpeed = res.simulationSpeed;
         params.numBalls = res.numBalls;
         params.ballSize = res.ballSize;
         params.pushAmp = res.pushAmp;
@@ -202,14 +210,22 @@ function readParams () {
         pushFactor = 1.0 - params.pushAmp;
 
         //Init drop down display
-        document.getElementById("ball-speed").value = params.ballSpeed;
+        document.getElementById("simulation-speed").value = params.simulationSpeed;
+        document.getElementById("simulation-speed-value").innerHTML = "("+params.simulationSpeed+")";
         document.getElementById("num-balls").value = res.numBalls;
+        document.getElementById("num-balls-value").innerHTML = "("+params.numBalls+")";
         document.getElementById("ball-size").value = params.ballSize;
+        document.getElementById("ball-size-value").innerHTML = "("+params.ballSize+")";
         document.getElementById("push-amp").value = params.pushAmp;
+        document.getElementById("push-amp-value").innerHTML = "("+params.pushAmp+")";
         document.getElementById("push-change").value = params.pushChange;
+        document.getElementById("push-change-value").innerHTML = "("+params.pushChange+")";
         document.getElementById("crash-shrink").value = params.crashShrink;
+        document.getElementById("crash-shrink-value").innerHTML = "("+params.crashShrink+")";
         document.getElementById("shrink-interval").value = params.shrinkInterval;
+        document.getElementById("shrink-interval-value").innerHTML = "("+params.shrinkInterval+")";
         document.getElementById("crash-scale").value = params.crashScale;
+        document.getElementById("crash-scale-value").innerHTML = "("+params.crashScale+")";
     }
   }
 
@@ -318,8 +334,8 @@ function detectCollisions () {
       //console.log ("obj2 x, y, rad"+obj2.x+", "+obj2.y+", "+obj2.rad)
       if (circleIntersect(obj1.x, obj1.y, obj1.rad, obj2.x, obj2.y, obj2.rad)) {
         //console.log("collsion detect at "+obj1.x+" i "+i+" j "+j)
-        obj1.col = "#DE1C1C";
-        obj2.col = "#DE1C1D";
+        obj1.col = "#2d862d";
+        obj2.col = "#408000";
 
         let vCollision = {x: obj2.x - obj1.x, y: obj2.y - obj1.y};
         let distance = Math.sqrt((obj2.x-obj1.x)*(obj2.x-obj1.x) + (obj2.y-obj1.y)*(obj2.y-obj1.y));

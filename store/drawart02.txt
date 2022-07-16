@@ -1,1 +1,1 @@
-{"file":"drawart02.txt","speed":200,"numParts":100,"partSize":1,"impactFactor":0.5,"clearTrace":0}
+{"file":"drawart02.txt","speed":200,"numParts":150,"partSize":2,"impactFactor":0.7,"clearTrace":true,"simulationSpeed":1350}

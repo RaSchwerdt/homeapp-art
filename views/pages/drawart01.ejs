@@ -10,36 +10,51 @@
             <%- include('../partials/buttons-canvas') %>
             <div class="mb-3 row">
                 <div class="col">
-                    <label>Ball speed</label>
-                    <select class="form-select form-select-sm" id="ball-speed">
+                    <label>Simulation speed 5-100</label>
+                    <span id="simulation-speed-value" style="color:red;"></span>
+                    <input type="range" class="form-range" min="5" max="100" step="5" id="simulation-speed">
+                    <!--
+                  <select class="form-select form-select-sm" id="ball-speed">
                         <option value="80">80</option>
                         <option value="60">60</option>
                         <option value="40">40</option>
                         <option value="20">20</option>
                         <option value="10">10</option>
                     </select>
+                -->
                 </div>
                 <div class="col">
-                    <label>Number of balls</label>
+                    <label>Number of balls 5-50</label>
+                    <span id="num-balls-value" style="color:red;"></span>
+                    <input type="range" class="form-range" min="5" max="50" step="5" id="num-balls">
+                    <!--
                     <select class="form-select form-select-sm" id="num-balls">
                         <option value="10">10</option>
                         <option value="15">15</option>
                         <option value="20">20</option>
                     </select>
+                -->
                 </div> 
             </div> 
             <div class="mb-3 row">
                 <div class="col">
-                    <label>Ball size</label>
+                    <label>Ball size 5-30</label>
+                    <span id="ball-size-value" style="color:red;"></span>
+                    <input type="range" class="form-range" min="5" max="30" step="5" id="ball-size">
+                    <!--
                     <select class="form-select form-select-sm" id="ball-size">
                         <option value="5">5</option>
                         <option value="10">10</option>
                         <option value="15">15</option>
                         <option value="25">25</option>
                     </select>
+                -->
                 </div>
                 <div class="col">
-                    <label>Push amplitude</label>
+                    <label>Push amplitude 0.0-0.5</label>
+                    <span id="push-amp-value" style="color:red;"></span>
+                    <input type="range" class="form-range" min="0.0" max="0.5" step="0.01" id="push-amp">
+                    <!--
                     <select class="form-select form-select-sm" id="push-amp">
                         <option value="0.0">0.0</option>
                         <option value="0.01">0.01</option>
@@ -48,45 +63,62 @@
                         <option value="0.1">0.1</option>
                         <option value="0.2">0.2</option>
                     </select>
+                -->
                 </div> 
             </div> 
             <div class="mb-3 row">
                 <div class="col">
-                    <label>Push change interval</label>
+                    <label>Push change interval 500-2000</label>
+                    <span id="push-change-value" style="color:red;"></span>
+                    <input type="range" class="form-range" min="500" max="2000" step="100" id="push-change">
+                    <!--
                     <select class="form-select form-select-sm" id="push-change">
                         <option value="2000">2000</option>
                         <option value="1500">1500</option>
                         <option value="1000">1000</option>
                         <option value="500">500</option>
                     </select>
+                -->
                 </div>
                 <div class="col">
-                    <label>Crash shrink factor</label>
+                    <label>Crash shrink factor 1-5</label>
+                    <span id="crash-shrink-value" style="color:red;"></span>
+                    <input type="range" class="form-range" min="1" max="5" step="1" id="crash-shrink">
+                    <!--
                     <select class="form-select form-select-sm" id="crash-shrink">
                         <option value="1">1</option>
                         <option value="2">2</option>
                         <option value="5">5</option>
                     </select>
+                -->
                 </div> 
             </div> 
             <div class="mb-3 row">
                 <div class="col">
-                    <label>Shrink interval</label>
+                    <label>Shrink interval 500-2000</label>
+                    <span id="shrink-interval-value" style="color:red;"></span>
+                    <input type="range" class="form-range" min="500" max="2000" step="100" id="shrink-interval">
+                    <!--
                     <select class="form-select form-select-sm" id="shrink-interval">
                         <option value="2000">2000</option>
                         <option value="1500">1500</option>
                         <option value="1000">1000</option>
                         <option value="500">500</option>
                     </select>
+                -->
                 </div>
                 <div class="col">
-                    <label>Crash scale factor</label>
+                    <label>Crash scale factor 5-20</label>
+                    <span id="crash-scale-value" style="color:red;"></span>
+                    <input type="range" class="form-range" min="5" max="20" step="5" id="crash-scale">
+                    <!--
                     <select class="form-select form-select-sm" id="crash-scale">
                         <option value="5">5</option>
                         <option value="10">10</option>
                         <option value="15">15</option>
                         <option value="20">20</option>
-                        </select>
+                    </select>
+                    -->
                 </div> 
             </div> 
             <%- include('../partials/buttons-params') %>

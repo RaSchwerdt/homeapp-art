@@ -4,11 +4,11 @@ let loopInterval = null;
 let loopCount = 0;
 let params = {
     file: FILE_NAME,
-    speed: 2000,
+    simulationSpeed: 2000,
     numParts: 10,
     partSize: 1,
     impactFactor: 0.99,
-    clearTrace: 0,
+    clearTrace: true,
 }
 let part = {
     x: 0,
@@ -71,32 +71,35 @@ document.getElementById("save-button").onclick = function () {
 document.getElementById("read-button").onclick = function () {
 readParams ();
 };
-document.getElementById("speed").onchange = function () {
-    params.speed = parseInt(document.getElementById('speed').value);
-    console.log ("speed "+params.speed);
-    clearCanvas();
+document.getElementById("simulation-speed").oninput = function () {
+  params.simulationSpeed = parseInt(document.getElementById('simulation-speed').value);
+  document.getElementById("simulation-speed-value").innerHTML = "("+params.simulationSpeed+")";
+  //console.log ("simulation-speed "+params.simulationSpeed);
+  clearCanvas();
 };
-document.getElementById("num-parts").onchange = function () {
+document.getElementById("num-parts").oninput = function () {
     params.numParts = parseInt(document.getElementById('num-parts').value);
-    console.log ("num-parts "+params.numParts);
+    document.getElementById("num-parts-value").innerHTML = "("+params.numParts+")";
+    //console.log ("num-parts "+params.numParts);
     clearCanvas();
 };
-document.getElementById("part-size").onchange = function () {
+document.getElementById("part-size").oninput = function () {
     params.partSize = parseInt(document.getElementById('part-size').value);
-    console.log ("part-size "+params.partSize);
+    document.getElementById("part-size-value").innerHTML = "("+params.partSize+")";
+    //console.log ("part-size "+params.partSize);
     clearCanvas();
 };
-document.getElementById("impact-factor").onchange = function () {
+document.getElementById("impact-factor").oninput = function () {
     params.impactFactor = parseFloat(document.getElementById('impact-factor').value);
-    console.log ("impact-factor "+params.impactFactor);
+    document.getElementById("impact-factor-value").innerHTML = "("+params.impactFactor+")";
+    //console.log ("impact-factor "+params.impactFactor);
     clearCanvas();
 };
 document.getElementById("clear-trace").onchange = function () {
-  params.clearTrace = parseInt(document.getElementById('clear-trace').value);
-  console.log ("clear-trace "+params.clearTrace);
+  params.clearTrace = document.getElementById('clear-trace').checked;
+  //console.log ("clear-trace "+params.clearTrace);
   clearCanvas();
 };
-
 
 function startLoop () {
     console.log("startLoop");
@@ -120,7 +123,7 @@ function startLoop () {
       }
       
     if (loopInterval == null) {
-      loopInterval = setInterval(drawToCanvas, params.speed);  
+      loopInterval = setInterval(drawToCanvas, params.simulationSpeed);  
     }
   
   }
@@ -166,11 +169,15 @@ function readParams () {
         params.clearTrace = res.clearTrace;
 
         //Init drop down display
-        document.getElementById("speed").value = params.speed;
+        document.getElementById("simulation-speed").value = params.simulationSpeed;
+        document.getElementById("simulation-speed-value").innerHTML = "("+params.simulationSpeed+")";
         document.getElementById("num-parts").value = res.numParts;
+        document.getElementById("num-parts-value").innerHTML = "("+params.numParts+")";
         document.getElementById("part-size").value = params.partSize;
+        document.getElementById("part-size-value").innerHTML = "("+params.partSize+")";
         document.getElementById("impact-factor").value = params.impactFactor;
-        document.getElementById("clear-trace").value = params.clearTrace;
+        document.getElementById("impact-factor-value").innerHTML = "("+params.impactFactor+")";
+        document.getElementById("clear-trace").checked = params.clearTrace;
     }
   }
 
