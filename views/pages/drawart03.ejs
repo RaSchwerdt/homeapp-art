@@ -10,43 +10,29 @@
             <%- include('../partials/buttons-canvas') %>
             <div class="mb-3 row">
                 <div class="col">
-                    <label>Simulation speed</label>
-                    <select class="form-select form-select-sm" id="simulation-speed">
-                        <option value="2000">2000</option>
-                        <option value="1000">1000</option>
-                        <option value="500">500</option>
-                        <option value="200">200</option>
-                        <option value="100">100</option>
-                    </select>
+                    <label>Simulation speed 100-2000</label>
+                    <span id="simulation-speed-value" style="color:red;"></span>
+                    <input type="range" class="form-range" min="100" max="2000" step="50" id="simulation-speed">
                 </div>
                 <div class="col">
-                    <label>Asteroid appearance</label>
-                    <select class="form-select form-select-sm" id="asteroid-appearance">
-                        <option value="50">50</option>
-                        <option value="20">20</option>
-                        <option value="10">10</option>
-                    </select>
+                    <label>Asteroid appearance 10-50</label>
+                    <span id="asteroid-appearance-value" style="color:red;"></span>
+                    <input type="range" class="form-range" min="10" max="50" step="10" id="asteroid-appearance">
                 </div>
             </div> 
             <div class="mb-3 row">
                 <div class="col">
-                    <label>Central gravity</label>
-                    <select class="form-select form-select-sm" id="central-gravity">
-                        <option value="20">20</option>
-                        <option value="15">15</option>
-                        <option value="10">10</option>
-                        <option value="5">5</option>
-                    </select>
+                    <label>Central size 20-40</label>
+                    <span id="central-size-value" style="color:red;"></span>
+                    <input type="range" class="form-range" min="20" max="40" step="5" id="central-size">
                 </div>
                 <div class="col">
-                    <label>Asteroid size</label>
-                    <select class="form-select form-select-sm" id="asteroid-size">
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="5">5</option>
-                    </select>
+                    <label>Asteroid size 1-5</label>
+                    <span id="asteroid-size-value" style="color:red;"></span>
+                    <input type="range" class="form-range" min="1" max="5" step="1" id="asteroid-size">
                 </div> 
             </div> 
+            <!--
             <div class="mb-3 row">
                 <div class="col">
                     <label>Clear trace</label>
@@ -56,6 +42,43 @@
                     </select>
                 </div>
             </div> 
+            <div class="mb-3 row">
+                <div class="col">
+                        <input class="form-check-input" type="checkbox" id="planet1-switch" value="" >
+                </div>
+                <div class="col">
+                    <label for="customRange2" class="form-label">Distance from center</label>
+                    <input type="range" class="form-range" min="50" max="250" step="5" id="planet1-distance">
+                </div>
+                <div class="col">
+                    <label for="customRange2" class="form-label">Start angle</label>
+                    <input type="range" class="form-range" min="0" max="360" step="10" id="planet-start-angle">
+                </div>
+                <div class="col">
+                    <label>Angle velocity</label>
+                    <select class="form-select form-select-sm" id="planet1-angle-velocity">
+                        <option value="0">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="5">5</option>
+                        <option value="10">10</option>
+                    </select>
+                </div>
+                <div class="col">
+                    <label>Size</label>
+                    <select class="form-select form-select-sm" id="planet1-size">
+                        <option value="0">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="5">5</option>
+                        <option value="10">10</option>
+                    </select>
+                </div>
+            </div> -->
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="clear-trace">
+                <label class="form-check-label" for="clear-trace">Clear trace</label>    
+            </div>
             <%- include('../partials/buttons-params') %>
         </div>
         <script src="scripts/bootstrap.min.js"></script>

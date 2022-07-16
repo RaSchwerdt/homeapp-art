@@ -1,15 +1,17 @@
 //Constants ---------------------------------------------------------------
 const FILE_NAME = "drawart03.txt";
 const MASS_FACTOR = 5;
+const BACK_COLOR = '#010101';
 let loopInterval = null;
 let loopCount = 0;
 let params = {
     file: FILE_NAME,
     simulationSpeed: 2000,
     asteroidAppearance: 50,
-    centralGravity: 10,
+    centralSize: 20,
     asteroidSize: 2,
     clearTrace: 0,
+    testSlider: 55,
 }
 let gravityField = {
   x: 0,
@@ -65,7 +67,7 @@ let asteroidColors = [
 let artCanvas = document.getElementById('art-canvas');
 artCanvas.setAttribute ('width', screen.availWidth/3);
 artCanvas.setAttribute ('height', screen.availHeight/3); 
-artCanvas.style.backgroundColor= '#010101';
+artCanvas.style.backgroundColor = BACK_COLOR;
 let ctx = artCanvas.getContext('2d');
 document.body.onload = function () {
   readParams ();
@@ -88,47 +90,55 @@ document.getElementById("save-button").onclick = function () {
 document.getElementById("read-button").onclick = function () {
 readParams ();
 };
-document.getElementById("simulation-speed").onchange = function () {
+document.getElementById("simulation-speed").oninput = function () {
     params.simulationSpeed = parseInt(document.getElementById('simulation-speed').value);
-    console.log ("simulation-speed "+params.simulationSpeed);
+    document.getElementById("simulation-speed-value").innerHTML = "("+params.simulationSpeed+")";
+    //console.log ("simulation-speed "+params.simulationSpeed);
     clearCanvas();
 };
-document.getElementById("asteroid-appearance").onchange = function () {
+document.getElementById("asteroid-appearance").oninput = function () {
   params.asteroidAppearance = parseInt(document.getElementById('asteroid-appearance').value);
-  console.log ("asteroid-appearance "+params.asteroidAppearance);
+  document.getElementById("asteroid-appearance-value").innerHTML = "("+params.asteroidAppearance+")";
+  //console.log ("asteroid-appearance "+params.asteroidAppearance);
   clearCanvas();
 };
-document.getElementById("central-gravity").onchange = function () {
-    params.centralGravity = parseInt(document.getElementById('central-gravity').value);
-    console.log ("central-gravity "+params.centralGravity);
+document.getElementById("central-size").onchange = function () {
+    params.centralSize = parseInt(document.getElementById('central-size').value);
+    document.getElementById("central-size-value").innerHTML = "("+params.centralSize+")";
+    //console.log ("central-size "+params.centralSize);
     clearCanvas();
 };
 document.getElementById("asteroid-size").onchange = function () {
     params.asteroidSize = parseInt(document.getElementById('asteroid-size').value);
-    console.log ("asteroid-size "+params.asteroidSize);
+    document.getElementById("asteroid-size-value").innerHTML = "("+params.asteroidSize+")";
+    //console.log ("asteroid-size "+params.asteroidSize);
     clearCanvas();
 };
 document.getElementById("clear-trace").onchange = function () {
-  params.clearTrace = parseInt(document.getElementById('clear-trace').value);
-  console.log ("clear-trace "+params.clearTrace);
+  params.clearTrace = document.getElementById('clear-trace').checked;
+  //console.log ("clear-trace "+params.clearTrace);
   clearCanvas();
 };
 
+
+
 function startLoop () {
     console.log("startLoop");
-
+    //params.testSlider = parseInt(document.getElementById('test-slider').value);
+    //console.log ("test-slider "+params.testSlider);
+  
     //Create the gravity field
-    //gravityFields.push(new gravityField.init(artCanvas.width/2, artCanvas.height/2, params.centralGravity));
-    gravityFields[0] = new gravityField.init(0, 0, 0, params.centralGravity);
+    //gravityFields.push(new gravityField.init(artCanvas.width/2, artCanvas.height/2, params.centralSize));
+    gravityFields[0] = new gravityField.init(0, 0, 0, params.centralSize);
     gravityFields[0].x = artCanvas.width/2 + gravityFields[0].dist * Math.cos(gravityFields[0].a);
     gravityFields[0].y = artCanvas.height/2 + gravityFields[0].dist * Math.sin(gravityFields[0].a);
-    gravityFields[1] = new gravityField.init(0, 50, 5, params.centralGravity-10);
+    gravityFields[1] = new gravityField.init(0, 50, 5, params.centralSize-10);
     gravityFields[1].x = artCanvas.width/2 + gravityFields[1].dist * Math.cos(gravityFields[1].a);
     gravityFields[1].y = artCanvas.height/2 + gravityFields[1].dist * Math.sin(gravityFields[1].a);
-    gravityFields[2] = new gravityField.init(0, 100, 3, params.centralGravity-8);
+    gravityFields[2] = new gravityField.init(0, 100, 3, params.centralSize-8);
     gravityFields[2].x = artCanvas.width/2 + gravityFields[1].dist * Math.cos(gravityFields[1].a);
     gravityFields[2].y = artCanvas.height/2 + gravityFields[1].dist * Math.sin(gravityFields[1].a);
-    gravityFields[3] = new gravityField.init(0, 200, 1, params.centralGravity-2);
+    gravityFields[3] = new gravityField.init(0, 200, 1, params.centralSize-2);
     gravityFields[3].x = artCanvas.width/2 + gravityFields[1].dist * Math.cos(gravityFields[1].a);
     gravityFields[3].y = artCanvas.height/2 + gravityFields[1].dist * Math.sin(gravityFields[1].a);
 
@@ -177,16 +187,20 @@ function readParams () {
         //Init param values
         params.simulationSpeed = res.simulationSpeed;
         params.asteroidAppearance = res.asteroidAppearance;
-        params.centralGravity = res.centralGravity;
+        params.centralSize = res.centralSize;
         params.asteroidSize = res.asteroidSize;
         params.clearTrace = res.clearTrace;
 
         //Init drop down display
         document.getElementById("simulation-speed").value = params.simulationSpeed;
-        document.getElementById("central-gravity").value = params.asteroidAppearance;
-        document.getElementById("central-gravity").value = params.centralGravity;
+        document.getElementById("simulation-speed-value").innerHTML = "("+params.simulationSpeed+")";
+        document.getElementById("asteroid-appearance").value = params.asteroidAppearance;
+        document.getElementById("asteroid-appearance-value").innerHTML = "("+params.asteroidAppearance+")";
+        document.getElementById("central-size").value = params.centralSize;
+        document.getElementById("central-size-value").innerHTML = "("+params.centralSize+")";
         document.getElementById("asteroid-size").value = params.asteroidSize;
-        document.getElementById("clear-trace").value = params.clearTrace;
+        document.getElementById("asteroid-size-value").innerHTML = "("+params.asteroidSize+")";
+        document.getElementById("clear-trace").checked = params.clearTrace;
     }
   }
 
@@ -210,10 +224,13 @@ function drawToCanvas () {
   if (params.clearTrace==1) {
     ctx.clearRect(0, 0, artCanvas.width, artCanvas.height);
   }
-  drawGravityFields();
+
+  drawGravityFields(true);
+  moveGravityFields();
+  drawGravityFields(false);
+
   drawAsteroids();
   calculateAsteroidVelocity();
-  moveGravityFields();
   moveAsteroids();
   if (loopCount % params.asteroidAppearance == 0) {
     addAsteroid();
@@ -224,12 +241,16 @@ function drawToCanvas () {
 }
 
 
-function drawGravityFields () {
+function drawGravityFields (clear) {
   for (let i=0; i< gravityFields.length; i++) {
       //console.log("draw gravity field "+i+" x "+gravityFields[i].x+" y "+gravityFields[i].y+" rad "+gravityFields[i].rad+" col "+gravityFields[i].col);
       ctx.beginPath();
       ctx.arc(gravityFields[i].x, gravityFields[i].y, gravityFields[i].rad, 0, Math.PI*2);
-      ctx.fillStyle = gravityFields[i].col;
+      if (clear == true) {
+        ctx.fillStyle = BACK_COLOR;
+      } else {
+        ctx.fillStyle = gravityFields[i].col;
+      }
       ctx.fill();
       ctx.closePath();  
   }
