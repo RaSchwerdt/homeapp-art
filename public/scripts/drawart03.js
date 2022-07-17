@@ -2,8 +2,27 @@
 const FILE_NAME = "drawart03.txt";
 const MASS_FACTOR = 5;
 const BACK_COLOR = '#010101';
+const CRASH_COLOR = '#ff004c';
 let loopInterval = null;
 let loopCount = 0;
+let modalparams = {
+  dist: 40,
+  start: 0,
+  speed: 1,
+  size:5,
+}
+let planet = {
+  dist: 0,
+  start: 0,
+  speed: 0,
+  size: 0,  
+  init: function (dist, start, speed, size) {
+    this.dist = dist;
+    this.start = start;
+    this.speed = speed;
+    this.size = size;
+  }
+}
 let params = {
     file: FILE_NAME,
     simulationSpeed: 2000,
@@ -11,7 +30,7 @@ let params = {
     centralSize: 20,
     asteroidSize: 2,
     clearTrace: 0,
-    testSlider: 55,
+    planets: [],
 }
 let gravityField = {
   x: 0,
@@ -22,6 +41,7 @@ let gravityField = {
   rad: 0, //size of planet
   mass: 0,
   col: null,
+  crash: false,
   init: function (a, dist, da, rad) {
     this.a = a;
     this.dist = dist;
@@ -72,6 +92,8 @@ let ctx = artCanvas.getContext('2d');
 document.body.onload = function () {
   readParams ();
 };
+
+//Buttons
 document.getElementById("start-button").onclick = function () {
     startLoop();
 };
@@ -90,6 +112,48 @@ document.getElementById("save-button").onclick = function () {
 document.getElementById("read-button").onclick = function () {
 readParams ();
 };
+
+//Modal window
+document.getElementById("modal-button").onclick = function () {
+  document.getElementById("planet-modal").style.display = "block";
+  document.getElementById('modal-distance').value = modalparams.dist;
+  document.getElementById('modal-start').value = modalparams.start;
+  document.getElementById('modal-speed').value = modalparams.speed;
+  document.getElementById('modal-size').value = modalparams.size;
+};
+document.getElementById("modal-save").onclick = function () {
+  params.planets.push(new planet.init(modalparams.dist, modalparams.start, modalparams.speed, modalparams.size));
+  //console.log ("modal-save "+params.planets.length);
+  listPlanets(params.planets);
+  document.getElementById("planet-modal").style.display = "none";
+  clearCanvas();
+};
+document.getElementById("modal-remove").onclick = function () {
+  params.planets.pop();
+  //console.log ("modal-remove "+params.planets.length);
+  listPlanets(params.planets);
+};
+document.getElementById("modal-close").onclick = function () {
+  document.getElementById("planet-modal").style.display = "none";
+};
+document.getElementById("modal-distance").oninput = function () {
+  modalparams.dist = document.getElementById('modal-distance').value;
+  document.getElementById("modal-distance-value").innerHTML = "("+modalparams.dist+")";
+};
+document.getElementById("modal-start").oninput = function () {
+  modalparams.start = document.getElementById('modal-start').value;
+  document.getElementById("modal-start-value").innerHTML = "("+modalparams.start+")";
+};
+document.getElementById("modal-speed").oninput = function () {
+  modalparams.speed = document.getElementById('modal-speed').value;
+  document.getElementById("modal-speed-value").innerHTML = "("+ modalparams.speed+")";
+};
+document.getElementById("modal-size").oninput = function () {
+  modalparams.size = document.getElementById('modal-size').value;
+  document.getElementById("modal-size-value").innerHTML = "("+modalparams.size+")";
+};
+
+//Input elements
 document.getElementById("simulation-speed").oninput = function () {
     params.simulationSpeed = parseInt(document.getElementById('simulation-speed').value);
     document.getElementById("simulation-speed-value").innerHTML = "("+params.simulationSpeed+")";
@@ -132,6 +196,18 @@ function startLoop () {
     gravityFields[0] = new gravityField.init(0, 0, 0, params.centralSize);
     gravityFields[0].x = artCanvas.width/2 + gravityFields[0].dist * Math.cos(gravityFields[0].a);
     gravityFields[0].y = artCanvas.height/2 + gravityFields[0].dist * Math.sin(gravityFields[0].a);
+    gravityFields[0].col = '#ffffe6';
+
+    let arr = params.planets;
+    for (i=0; i<arr.length; i++) {
+      console.log ("Planet "+(i+1)+" start "+arr[i].start+" dist "+arr[i].dist+" speed "+arr[i].speed+" size "+arr[i].size);
+      gravityFields[i+1] = new gravityField.init(parseInt(arr[i].start), parseInt(arr[i].dist), parseInt(arr[i].speed), parseInt(arr[i].size));
+      gravityFields[i+1].x = artCanvas.width/2 + gravityFields[i+1].dist * Math.cos(gravityFields[i+1].a);
+      gravityFields[i+1].y = artCanvas.height/2 + gravityFields[i+1].dist * Math.sin(gravityFields[i+1].a);
+  
+    }
+
+    /*
     gravityFields[1] = new gravityField.init(0, 50, 5, params.centralSize-10);
     gravityFields[1].x = artCanvas.width/2 + gravityFields[1].dist * Math.cos(gravityFields[1].a);
     gravityFields[1].y = artCanvas.height/2 + gravityFields[1].dist * Math.sin(gravityFields[1].a);
@@ -141,6 +217,7 @@ function startLoop () {
     gravityFields[3] = new gravityField.init(0, 200, 1, params.centralSize-2);
     gravityFields[3].x = artCanvas.width/2 + gravityFields[1].dist * Math.cos(gravityFields[1].a);
     gravityFields[3].y = artCanvas.height/2 + gravityFields[1].dist * Math.sin(gravityFields[1].a);
+    */
 
     //Create asteroid
     addAsteroid();
@@ -190,6 +267,7 @@ function readParams () {
         params.centralSize = res.centralSize;
         params.asteroidSize = res.asteroidSize;
         params.clearTrace = res.clearTrace;
+        params.planets = res.planets;
 
         //Init drop down display
         document.getElementById("simulation-speed").value = params.simulationSpeed;
@@ -201,11 +279,28 @@ function readParams () {
         document.getElementById("asteroid-size").value = params.asteroidSize;
         document.getElementById("asteroid-size-value").innerHTML = "("+params.asteroidSize+")";
         document.getElementById("clear-trace").checked = params.clearTrace;
+        listPlanets(params.planets);
     }
   }
 
   dynRequest.open ('GET', '/parread?file='+FILE_NAME, true);
   dynRequest.send();
+}
+
+function listPlanets (arr) {
+  let list = document.getElementById("list-planets")
+  while (list.hasChildNodes()) {
+    //console.log ("Remove childs");
+    list.removeChild(list.firstChild);
+  }
+  for (i=0; i <arr.length; i++) {
+    let planetString = "Planet "+(i+1)+": Distance from center "+arr[i].dist+", Start angle "+arr[i].start+", Angle speed "+arr[i].speed+", Planet size "+arr[i].size;
+    //console.log (planetString);
+    let listItem = document.createElement("li")
+    listItem.setAttribute('class', 'list-group-item')
+    listItem.innerHTML = planetString;
+    list.appendChild(listItem);
+  }
 }
 
 //Drawing ---------------------------------------------------------------
@@ -243,13 +338,32 @@ function drawToCanvas () {
 
 function drawGravityFields (clear) {
   for (let i=0; i< gravityFields.length; i++) {
+
+      obj = gravityFields[i];
+
+      //Draw planet curve
+      ctx.beginPath();
+      ctx.arc(artCanvas.width/2, artCanvas.height/2, obj.dist, 0, Math.PI*2);
+      ctx.lineWidth = 1;  
+      ctx.setLineDash([4, 8]);
+      ctx.strokeStyle = '#2f2f2f';
+      ctx.stroke();
+      ctx.closePath();
+
+      //Draw planet
       //console.log("draw gravity field "+i+" x "+gravityFields[i].x+" y "+gravityFields[i].y+" rad "+gravityFields[i].rad+" col "+gravityFields[i].col);
       ctx.beginPath();
-      ctx.arc(gravityFields[i].x, gravityFields[i].y, gravityFields[i].rad, 0, Math.PI*2);
+      ctx.arc(obj.x, obj.y, obj.rad, 0, Math.PI*2);
+      ctx.strokeStyle = BACK_COLOR;
       if (clear == true) {
-        ctx.fillStyle = BACK_COLOR;
+          ctx.fillStyle = BACK_COLOR;
       } else {
-        ctx.fillStyle = gravityFields[i].col;
+        if (obj.crash == true) {
+          ctx.fillStyle = CRASH_COLOR;
+          obj.crash = false;
+        } else {
+          ctx.fillStyle = obj.col;
+        }
       }
       ctx.fill();
       ctx.closePath();  
@@ -259,6 +373,7 @@ function drawGravityFields (clear) {
 
 function moveGravityFields () {
   for (let i=0; i< gravityFields.length; i++) {
+    //console.log ("I "+i+" Angle "+gravityFields[i].a+" speed "+gravityFields[i].da);
     gravityFields[i].a += gravityFields[i].da;
     if (gravityFields[i].a>360) {
       gravityFields[i].a -= 360;
@@ -294,7 +409,8 @@ function calculateAsteroidVelocity () {
       let distance = Math.sqrt((obj2.x-obj1.x)*(obj2.x-obj1.x) + (obj2.y-obj1.y)*(obj2.y-obj1.y));
       //console.log("Distance "+distance);
       if (distance < obj2.rad) {
-        asteroids.splice(0,1);
+        obj2.crash = true;
+        asteroids.splice(i,1);
       } else {
         obj1.dx += obj2.mass*(obj2.x-obj1.x) / Math.pow(distance, 2);
         obj1.dy += obj2.mass*(obj2.y-obj1.y) / Math.pow(distance, 2);  
