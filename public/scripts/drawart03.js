@@ -1,6 +1,5 @@
 //Constants ---------------------------------------------------------------
 const FILE_NAME = "drawart03.txt";
-const MASS_FACTOR = 5;
 const BACK_COLOR = '#010101';
 const CRASH_COLOR = '#ff004c';
 let loopInterval = null;
@@ -27,6 +26,7 @@ let params = {
     file: FILE_NAME,
     simulationSpeed: 2000,
     centralSize: 20,
+    gravityFactor: 1,
     ellipseFactor: 1.0,
     asteroidAppearance: 50,
     asteroidSize: 2,
@@ -36,19 +36,19 @@ let params = {
 let gravityField = {
   x: 0,
   y: 0,
-  a: 0, //angle in radians 0-360
   dist: 0, //distance from center
-  da: 0, //angle velocity in radians 0-360
-  rad: 0, //size of planet
+  start: 0, //angle in radians 0-360
+  speed: 0, //angle velocity in radians 0-360
+  size: 0, //size of planet
   mass: 0,
   col: null,
   crash: false,
-  init: function (a, dist, da, rad) {
-    this.a = a;
+  init: function (dist, start, speed, size) {
     this.dist = dist;
-    this.da = da;
-    this.rad = rad;
-    this.mass = rad*MASS_FACTOR;
+    this.start = start;
+    this.speed = speed;
+    this.size = size;
+    this.mass = size*params.gravityFactor;
     this.col = "#2f2f2f";
   },
 }
@@ -167,10 +167,16 @@ document.getElementById("central-size").onchange = function () {
   //console.log ("central-size "+params.centralSize);
   clearCanvas();
 };
+document.getElementById("gravity-factor").onchange = function () {
+  params.gravityFactor = parseFloat(document.getElementById('gravity-factor').value);
+  document.getElementById("gravity-factor-value").innerHTML = "("+params.gravityFactor+")";
+  //console.log ("gravity-factor "+params.gravityFactor);
+  clearCanvas();
+};
 document.getElementById("ellipse-factor").onchange = function () {
   params.ellipseFactor = parseFloat(document.getElementById('ellipse-factor').value);
   document.getElementById("ellipse-factor-value").innerHTML = "("+params.ellipseFactor+")";
-  //console.log ("central-size "+params.centralSize);
+  //console.log ("ellipse-factor "+params.ellipseFactor);
   clearCanvas();
 };
 document.getElementById("asteroid-appearance").oninput = function () {
@@ -207,24 +213,12 @@ function startLoop () {
 
     let arr = params.planets;
     for (i=0; i<arr.length; i++) {
-      console.log ("Planet "+(i+1)+" start "+arr[i].start+" dist "+arr[i].dist+" speed "+arr[i].speed+" size "+arr[i].size);
-      gravityFields[i+1] = new gravityField.init(parseInt(arr[i].start), parseInt(arr[i].dist), parseInt(arr[i].speed), parseInt(arr[i].size));
-      gravityFields[i+1].x = artCanvas.width/2 + gravityFields[i+1].dist * Math.cos(gravityFields[i+1].a);
-      gravityFields[i+1].y = artCanvas.height/2 + gravityFields[i+1].dist * Math.sin(gravityFields[i+1].a);
+      console.log ("Planet "+(i+1)+" dist "+arr[i].dist+" start "+arr[i].start+" speed "+arr[i].speed+" size "+arr[i].size);
+      gravityFields[i+1] = new gravityField.init(parseInt(arr[i].dist), parseInt(arr[i].start), parseInt(arr[i].speed), parseInt(arr[i].size));
+      gravityFields[i+1].x = artCanvas.width/2 + gravityFields[i+1].dist * params.ellipseFactor  * Math.cos(gravityFields[i+1].start*2*Math.PI/360);
+      gravityFields[i+1].y = artCanvas.height/2 + gravityFields[i+1].dist * Math.sin(gravityFields[i+1].start*2*Math.PI/360);
   
     }
-
-    /*
-    gravityFields[1] = new gravityField.init(0, 50, 5, params.centralSize-10);
-    gravityFields[1].x = artCanvas.width/2 + gravityFields[1].dist * Math.cos(gravityFields[1].a);
-    gravityFields[1].y = artCanvas.height/2 + gravityFields[1].dist * Math.sin(gravityFields[1].a);
-    gravityFields[2] = new gravityField.init(0, 100, 3, params.centralSize-8);
-    gravityFields[2].x = artCanvas.width/2 + gravityFields[1].dist * Math.cos(gravityFields[1].a);
-    gravityFields[2].y = artCanvas.height/2 + gravityFields[1].dist * Math.sin(gravityFields[1].a);
-    gravityFields[3] = new gravityField.init(0, 200, 1, params.centralSize-2);
-    gravityFields[3].x = artCanvas.width/2 + gravityFields[1].dist * Math.cos(gravityFields[1].a);
-    gravityFields[3].y = artCanvas.height/2 + gravityFields[1].dist * Math.sin(gravityFields[1].a);
-    */
 
     //Create asteroid
     addAsteroid();
@@ -271,6 +265,7 @@ function readParams () {
         //Init param values
         params.simulationSpeed = res.simulationSpeed;
         params.centralSize = res.centralSize;
+        params.gravityFactor = res.gravityFactor;
         params.ellipseFactor = res.ellipseFactor;
         params.asteroidAppearance = res.asteroidAppearance;
         params.asteroidSize = res.asteroidSize;
@@ -282,6 +277,8 @@ function readParams () {
         document.getElementById("simulation-speed-value").innerHTML = "("+params.simulationSpeed+")";
         document.getElementById("central-size").value = params.centralSize;
         document.getElementById("central-size-value").innerHTML = "("+params.centralSize+")";
+        document.getElementById("gravity-factor").value = params.gravityFactor;
+        document.getElementById("gravity-factor-value").innerHTML = "("+params.gravityFactor+")";
         document.getElementById("ellipse-factor").value = params.ellipseFactor;
         document.getElementById("ellipse-factor-value").innerHTML = "("+params.ellipseFactor+")";
         document.getElementById("asteroid-appearance").value = params.asteroidAppearance;
@@ -362,9 +359,9 @@ function drawGravityFields (clear) {
       ctx.closePath();
 
       //Draw planet
-      //console.log("draw gravity field "+i+" x "+gravityFields[i].x+" y "+gravityFields[i].y+" rad "+gravityFields[i].rad+" col "+gravityFields[i].col);
+      //console.log("draw gravity field "+i+" x "+gravityFields[i].x+" y "+gravityFields[i].y+" size "+gravityFields[i].size+" col "+gravityFields[i].col);
       ctx.beginPath();
-      ctx.arc(obj.x, obj.y, obj.rad, 0, Math.PI*2);
+      ctx.arc(obj.x, obj.y, obj.size, 0, Math.PI*2);
       ctx.strokeStyle = BACK_COLOR;
       if (clear == true) {
           ctx.fillStyle = BACK_COLOR;
@@ -384,13 +381,15 @@ function drawGravityFields (clear) {
 
 function moveGravityFields () {
   for (let i=0; i< gravityFields.length; i++) {
+
+    let obj = gravityFields[i];
     //console.log ("I "+i+" Angle "+gravityFields[i].a+" speed "+gravityFields[i].da);
-    gravityFields[i].a += gravityFields[i].da;
-    if (gravityFields[i].a>360) {
-      gravityFields[i].a -= 360;
+    obj.start += obj.speed;
+    if (obj.start > 360) {
+      obj.start -= 360;
     }
-    gravityFields[i].x = artCanvas.width/2 + gravityFields[i].dist * params.ellipseFactor * Math.cos(gravityFields[i].a*2*Math.PI/360);
-    gravityFields[i].y = artCanvas.height/2 + gravityFields[i].dist * Math.sin(gravityFields[i].a*2*Math.PI/360);
+    obj.x = artCanvas.width/2 + obj.dist * params.ellipseFactor * Math.cos(obj.start*2*Math.PI/360);
+    obj.y = artCanvas.height/2 + obj.dist * Math.sin(obj.start*2*Math.PI/360);
   }
 }
 
@@ -419,7 +418,7 @@ function calculateAsteroidVelocity () {
 
       let distance = Math.sqrt((obj2.x-obj1.x)*(obj2.x-obj1.x) + (obj2.y-obj1.y)*(obj2.y-obj1.y));
       //console.log("Distance "+distance);
-      if (distance < obj2.rad) {
+      if (distance < obj2.size) {
         obj2.crash = true;
         asteroids.splice(i,1);
       } else {

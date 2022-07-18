@@ -1,0 +1,1 @@
+{"file":"drawart04.txt","simulationSpeed":750,"gravityFactor":6,"clearTrace":true,"planets":[{"dist":0,"start":0,"speed":0,"size":"20"},{"dist":"45","start":"60","speed":"2","size":"10"}]}
