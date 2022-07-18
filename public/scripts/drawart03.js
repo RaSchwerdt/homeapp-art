@@ -26,8 +26,9 @@ let planet = {
 let params = {
     file: FILE_NAME,
     simulationSpeed: 2000,
-    asteroidAppearance: 50,
     centralSize: 20,
+    ellipseFactor: 1.0,
+    asteroidAppearance: 50,
     asteroidSize: 2,
     clearTrace: 0,
     planets: [],
@@ -160,17 +161,23 @@ document.getElementById("simulation-speed").oninput = function () {
     //console.log ("simulation-speed "+params.simulationSpeed);
     clearCanvas();
 };
+document.getElementById("central-size").onchange = function () {
+  params.centralSize = parseInt(document.getElementById('central-size').value);
+  document.getElementById("central-size-value").innerHTML = "("+params.centralSize+")";
+  //console.log ("central-size "+params.centralSize);
+  clearCanvas();
+};
+document.getElementById("ellipse-factor").onchange = function () {
+  params.ellipseFactor = parseFloat(document.getElementById('ellipse-factor').value);
+  document.getElementById("ellipse-factor-value").innerHTML = "("+params.ellipseFactor+")";
+  //console.log ("central-size "+params.centralSize);
+  clearCanvas();
+};
 document.getElementById("asteroid-appearance").oninput = function () {
   params.asteroidAppearance = parseInt(document.getElementById('asteroid-appearance').value);
   document.getElementById("asteroid-appearance-value").innerHTML = "("+params.asteroidAppearance+")";
   //console.log ("asteroid-appearance "+params.asteroidAppearance);
   clearCanvas();
-};
-document.getElementById("central-size").onchange = function () {
-    params.centralSize = parseInt(document.getElementById('central-size').value);
-    document.getElementById("central-size-value").innerHTML = "("+params.centralSize+")";
-    //console.log ("central-size "+params.centralSize);
-    clearCanvas();
 };
 document.getElementById("asteroid-size").onchange = function () {
     params.asteroidSize = parseInt(document.getElementById('asteroid-size').value);
@@ -263,8 +270,9 @@ function readParams () {
 
         //Init param values
         params.simulationSpeed = res.simulationSpeed;
-        params.asteroidAppearance = res.asteroidAppearance;
         params.centralSize = res.centralSize;
+        params.ellipseFactor = res.ellipseFactor;
+        params.asteroidAppearance = res.asteroidAppearance;
         params.asteroidSize = res.asteroidSize;
         params.clearTrace = res.clearTrace;
         params.planets = res.planets;
@@ -272,10 +280,12 @@ function readParams () {
         //Init drop down display
         document.getElementById("simulation-speed").value = params.simulationSpeed;
         document.getElementById("simulation-speed-value").innerHTML = "("+params.simulationSpeed+")";
-        document.getElementById("asteroid-appearance").value = params.asteroidAppearance;
-        document.getElementById("asteroid-appearance-value").innerHTML = "("+params.asteroidAppearance+")";
         document.getElementById("central-size").value = params.centralSize;
         document.getElementById("central-size-value").innerHTML = "("+params.centralSize+")";
+        document.getElementById("ellipse-factor").value = params.ellipseFactor;
+        document.getElementById("ellipse-factor-value").innerHTML = "("+params.ellipseFactor+")";
+        document.getElementById("asteroid-appearance").value = params.asteroidAppearance;
+        document.getElementById("asteroid-appearance-value").innerHTML = "("+params.asteroidAppearance+")";
         document.getElementById("asteroid-size").value = params.asteroidSize;
         document.getElementById("asteroid-size-value").innerHTML = "("+params.asteroidSize+")";
         document.getElementById("clear-trace").checked = params.clearTrace;
@@ -343,7 +353,8 @@ function drawGravityFields (clear) {
 
       //Draw planet curve
       ctx.beginPath();
-      ctx.arc(artCanvas.width/2, artCanvas.height/2, obj.dist, 0, Math.PI*2);
+      //ctx.arc(artCanvas.width/2, artCanvas.height/2, obj.dist, 0, Math.PI*2);
+      ctx.ellipse(artCanvas.width/2, artCanvas.height/2, obj.dist * params.ellipseFactor, obj.dist, 0, 0, Math.PI*2);
       ctx.lineWidth = 1;  
       ctx.setLineDash([4, 8]);
       ctx.strokeStyle = '#2f2f2f';
@@ -378,7 +389,7 @@ function moveGravityFields () {
     if (gravityFields[i].a>360) {
       gravityFields[i].a -= 360;
     }
-    gravityFields[i].x = artCanvas.width/2 + gravityFields[i].dist * Math.cos(gravityFields[i].a*2*Math.PI/360);
+    gravityFields[i].x = artCanvas.width/2 + gravityFields[i].dist * params.ellipseFactor * Math.cos(gravityFields[i].a*2*Math.PI/360);
     gravityFields[i].y = artCanvas.height/2 + gravityFields[i].dist * Math.sin(gravityFields[i].a*2*Math.PI/360);
   }
 }
