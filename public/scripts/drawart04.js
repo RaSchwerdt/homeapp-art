@@ -5,20 +5,17 @@ const CRASH_COLOR = '#ff004c';
 let loopInterval = null;
 let loopCount = 0;
 let modParam = {
-  dist: 0,
+  dist: 40,
   start: 0,
-  speed: 0,
   size:5,
 }
 let planet = {
     dist: 0,
     start: 0,
-    speed: 0,
     size:5,
-    init: function (dist, start, speed, size) {
+    init: function (dist, start, size) {
       this.dist = dist;
       this.start = start;
-      this.speed = speed;
       this.size = size;
   }
 }  
@@ -27,25 +24,26 @@ let params = {
     file: FILE_NAME,
     simulationSpeed: 2000,
     gravityFactor: 1,
+    centralSize: 20,
+    ellipseFactor: 1.0,
     clearTrace: true,
     planets: [],
 }
 let gravityField = {
   dist: 0, //distance from center
   start: 0, //angle in radians 0-360
-  speed: 0, //angle velocity in radians 0-360
   size: 0, //size of planet
   x: 0,
   y: 0,
+  speed: 0, //Angle velocity
   dx: 0,
   dy: 0,
   mass: 0,
   col: null,
   crash: false,
-  init: function (dist, start, speed, size) {
+  init: function (dist, start, size) {
     this.dist = dist;
     this.start = start;
-    this.speed = speed;
     this.size = size;
     this.mass = size*params.gravityFactor;
     this.col = "#2f2f2f";
@@ -88,12 +86,11 @@ document.getElementById("modal-button").onclick = function () {
   document.getElementById("planet-modal").style.display = "block";
   document.getElementById('modal-distance').value = modParam.dist;
   document.getElementById('modal-start').value = modParam.start;
-  document.getElementById('modal-speed').value = modParam.speed;
   document.getElementById('modal-size').value = modParam.size;
 };
 document.getElementById("modal-save").onclick = function () {
     console.log ("Params "+modParam.dist+", "+modParam.start+", "+modParam.speed+", "+modParam.size);
-    params.planets.push(new planet.init(modParam.dist, modParam.start, modParam.speed, modParam.size));
+    params.planets.push(new planet.init(modParam.dist, modParam.start, modParam.size));
   listPlanets(params.planets);
   document.getElementById("planet-modal").style.display = "none";
   clearCanvas();
@@ -108,19 +105,15 @@ document.getElementById("modal-close").onclick = function () {
   document.getElementById("planet-modal").style.display = "none";
 };
 document.getElementById("modal-distance").oninput = function () {
-  modParam.dist = document.getElementById('modal-distance').value;
+  modParam.dist = parseInt(document.getElementById('modal-distance').value);
   document.getElementById("modal-distance-value").innerHTML = "("+modParam.dist+")";
 };
 document.getElementById("modal-start").oninput = function () {
-  modParam.start = document.getElementById('modal-start').value;
+  modParam.start = parseInt(document.getElementById('modal-start').value);
   document.getElementById("modal-start-value").innerHTML = "("+modParam.start+")";
 };
-document.getElementById("modal-speed").oninput = function () {
-  modParam.speed = document.getElementById('modal-speed').value;
-  document.getElementById("modal-speed-value").innerHTML = "("+ modParam.speed+")";
-};
 document.getElementById("modal-size").oninput = function () {
-  modParam.size = document.getElementById('modal-size').value;
+  modParam.size = parseInt(document.getElementById('modal-size').value);
   document.getElementById("modal-size-value").innerHTML = "("+modParam.size+")";
 };
 
@@ -137,6 +130,18 @@ document.getElementById("gravity-factor").onchange = function () {
   //console.log ("gravity-factor "+params.gravityFactor);
   clearCanvas();
 };
+document.getElementById("central-size").onchange = function () {
+  params.centralSize = parseInt(document.getElementById('central-size').value);
+  document.getElementById("central-size-value").innerHTML = "("+params.centralSize+")";
+  //console.log ("central-size "+params.centralSize);
+  clearCanvas();
+};
+document.getElementById("ellipse-factor").onchange = function () {
+  params.ellipseFactor = parseFloat(document.getElementById('ellipse-factor').value);
+  document.getElementById("ellipse-factor-value").innerHTML = "("+params.ellipseFactor+")";
+  //console.log ("ellipse-factor "+params.ellipseFactor);
+  clearCanvas();
+};
 document.getElementById("clear-trace").onchange = function () {
     params.clearTrace = document.getElementById('clear-trace').checked;
     //console.log ("clear-trace "+params.clearTrace);
@@ -146,17 +151,23 @@ document.getElementById("clear-trace").onchange = function () {
 
 function startLoop () {
     console.log("startLoop");
-    //params.testSlider = parseInt(document.getElementById('test-slider').value);
-    //console.log ("test-slider "+params.testSlider);
-  
+
+    //Central system
+    gravityFields[0] = new gravityField.init(0, 0, params.centralSize);
+    gravityFields[0].x = artCanvas.width/2;
+    gravityFields[0].y = artCanvas.height/2;
+    gravityFields[0].col = '#ffffe6';
+    gravityFields[0].speed =  0;
+
     //Create the gravity field
     //gravityFields.push(new gravityField.init(artCanvas.width/2, artCanvas.height/2, params.centralSize));
     let arr = params.planets;
     for (i=0; i<arr.length; i++) {
-      console.log ("Planet "+(i+1)+" dist "+arr[i].dist+" start "+arr[i].start+" speed "+arr[i].speed+" size "+arr[i].size);
-      gravityFields[i] = new gravityField.init(parseInt(arr[i].dist), parseInt(arr[i].start), parseInt(arr[i].speed), parseInt(arr[i].size));
-      gravityFields[i].x = artCanvas.width/2 + gravityFields[i].dist * Math.cos(gravityFields[i].start*2*Math.PI/360);
-      gravityFields[i].y = artCanvas.height/2 + gravityFields[i].dist * Math.sin(gravityFields[i].start*2*Math.PI/360);
+      console.log ("Planet "+(i+1)+" dist "+arr[i].dist+" start "+arr[i].start+" size "+arr[i].size);
+      gravityFields[i+1] = new gravityField.init(parseInt(arr[i].dist), parseInt(arr[i].start), parseInt(arr[i].size));
+      gravityFields[i+1].x = artCanvas.width/2 + gravityFields[i+1].dist * Math.cos(gravityFields[i+1].start*2*Math.PI/360);
+      gravityFields[i+1].y = artCanvas.height/2 + gravityFields[i+1].dist * Math.sin(gravityFields[i+1].start*2*Math.PI/360);
+      gravityFields[i+1].speed = Math.sqrt(gravityFields[0].mass*params.gravityFactor/gravityFields[i+1].dist);
   
     }
 
@@ -202,6 +213,8 @@ function readParams () {
         //Init param values
         params.simulationSpeed = res.simulationSpeed;
         params.gravityFactor = res.gravityFactor;
+        params.centralSize = res.centralSize;
+        params.ellipseFactor = res.ellipseFactor;
         params.clearTrace = res.clearTrace;
         params.planets = res.planets;
 
@@ -210,6 +223,10 @@ function readParams () {
         document.getElementById("simulation-speed-value").innerHTML = "("+params.simulationSpeed+")";
         document.getElementById("gravity-factor").value = params.gravityFactor;
         document.getElementById("gravity-factor-value").innerHTML = "("+params.gravityFactor+")";
+        document.getElementById("central-size").value = params.centralSize;
+        document.getElementById("central-size-value").innerHTML = "("+params.centralSize+")";
+        document.getElementById("ellipse-factor").value = params.ellipseFactor;
+        document.getElementById("ellipse-factor-value").innerHTML = "("+params.ellipseFactor+")";
         document.getElementById("clear-trace").checked = params.clearTrace;
         listPlanets(params.planets);
     }
@@ -226,7 +243,7 @@ function listPlanets (arr) {
     list.removeChild(list.firstChild);
   }
   for (i=0; i <arr.length; i++) {
-    let planetString = "Planet "+(i+1)+": Distance from center "+arr[i].dist+", Start angle "+arr[i].start+", Angle speed "+arr[i].speed+", Planet size "+arr[i].size;
+    let planetString = "Planet "+(i+1)+": Distance from center "+arr[i].dist+", Start angle "+arr[i].start+", Planet size "+arr[i].size;
     //console.log (planetString);
     let listItem = document.createElement("li")
     listItem.setAttribute('class', 'list-group-item')
@@ -266,7 +283,7 @@ function drawGravityFields () {
       obj = gravityFields[i];
 
       //Draw planet
-      //console.log("draw gravity field "+i+" x "+obj.x+" y "+obj.y+" size "+obj.size+" start "+obj.start+" spped "+obj.spped);
+      //console.log("Field "+i+" x "+obj.x+" y "+obj.y+" size "+obj.size+" start "+obj.start+" speed "+obj.speed);
       ctx.beginPath();
       ctx.arc(obj.x, obj.y, obj.size, 0, Math.PI*2);
       ctx.strokeStyle = BACK_COLOR;

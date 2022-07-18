@@ -21,6 +21,18 @@
                 </div>
             </div> 
             <div class="mb-3 row">
+                <div class="col">
+                    <label>Central size 20-35</label>
+                    <span id="central-size-value" style="color:red;"></span>
+                    <input type="range" class="form-range" min="20" max="35" step="5" id="central-size">
+                </div>
+                <div class="col">
+                    <label>Ellipse factor 1.0-2.0</label>
+                    <span id="ellipse-factor-value" style="color:red;"></span>
+                    <input type="range" class="form-range" min="1.0" max="2.0" step="0.1" id="ellipse-factor">
+                </div>
+            </div>
+            <div class="mb-3 row">
                 <div id="list-planets" class="list-group">
                 </div>
             </div>
@@ -40,9 +52,9 @@
                     <div class="modal-body">
                         <div class="mb-3 row">
                             <div class="col">
-                                <label>Distance from center 0-220</label>
+                                <label>Distance from center 40-220</label>
                                 <span id="modal-distance-value" style="color:red;"></span>
-                                <input type="range" class="form-range" min="0" max="220" step="5" id="modal-distance">
+                                <input type="range" class="form-range" min="40" max="220" step="5" id="modal-distance">
                             </div>
                         </div>
                         <div class="mb-3 row">
@@ -50,13 +62,6 @@
                                 <label>Start angle 0-350</label>
                                 <span id="modal-start-value" style="color:red;"></span>
                                 <input type="range" class="form-range" min="0" max="350" step="10" id="modal-start">
-                            </div>
-                        </div>
-                        <div class="mb-3 row">
-                            <div class="col">
-                                <label>Angle speed 0-10</label>
-                                <span id="modal-speed-value" style="color:red;"></span>
-                                <input type="range" class="form-range" min="0" max="10" step="1" id="modal-speed">
                             </div>
                         </div>
                         <div class="mb-3 row">
