@@ -1,1 +1,1 @@
-{"file":"drawart04.txt","simulationSpeed":750,"gravityFactor":6,"centralSize":30,"ellipseFactor":1,"clearTrace":true,"planets":[{"dist":80,"start":80,"size":9},{"dist":140,"start":30,"size":11}]}
+{"file":"drawart04.txt","simulationSpeed":750,"gravityFactor":9,"centralSize":25,"ellipseFactor":1.2,"clearTrace":true,"planets":[{"dist":40,"start":40,"size":6},{"dist":65,"start":170,"size":8},{"dist":100,"start":320,"size":10},{"dist":180,"start":40,"size":19}]}
