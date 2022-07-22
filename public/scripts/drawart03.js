@@ -329,6 +329,7 @@ function drawToCanvas () {
   movePlanets();
   drawGravityFields(false);
 
+  drawAsteroidBeltEllipse();
   drawAsteroids();
   calculateAsteroidVelocity();
   moveAsteroids();
@@ -461,10 +462,69 @@ function moveAsteroids () {
 }
 
 function addAsteroid () {
-  //console.log("Add asteroid ");
-  asteroids.push( new asteroid.init(artCanvas.width-20, 
+
+  //Chose randomly a side (left or right), where asteroid is comning from
+  let origin = artCanvas.width-20;
+  if (Math.floor(Math.random()*2)==0) {
+    origin = 20;
+  }
+  //console.log("Add asteroid "+origin);
+
+  asteroids.push( new asteroid.init(origin, 
     Math.floor(Math.random()*artCanvas.height), 
     Math.floor(Math.random()*6)-3,
     Math.floor(Math.random()*4)-2,
     params.asteroidSize));
+}
+
+function drawAsteroidBelt () {
+  for (let y=0; y<artCanvas.height; y=y+7) {
+    for (let j=0; j <1; j++) {
+      let x = Math.floor(Math.random()*20);
+
+      ctx.beginPath();
+      ctx.arc(x, y, Math.floor(Math.random()*3)+1, 0, Math.PI*2);
+      ctx.fillStyle = asteroidColors[Math.floor(Math.random() * asteroidColors.length)];
+      ctx.fill();
+      ctx.closePath();  
+
+      //console.log("x "+x+" width "+artCanvas.width+" pos "+(artCanvas.width-x)+" y "+y);
+      ctx.beginPath();
+      ctx.arc((artCanvas.width-x), y, Math.floor(Math.random()*3)+1, 0, Math.PI*2);
+      ctx.fillStyle = asteroidColors[Math.floor(Math.random() * asteroidColors.length)];
+      ctx.fill();
+      ctx.closePath();
+    }
+
+  }
+
+}
+
+function drawAsteroidBeltEllipse () {
+
+  console.log ("width "+(artCanvas.width)+" height "+(artCanvas.height));
+  for (let i=0; i<artCanvas.height; i=i+7) {
+    for (let j=0; j <3; j++) {
+
+      let y = artCanvas.height/2 - i;
+      let x = Math.sqrt(Math.pow(artCanvas.width/2, 2) - Math.pow(y, 2));
+
+      if (i < 5) {
+        //console.log (" x "+((artCanvas.width/2+x)+" y "+(artCanvas.height/2+y)));
+      }
+
+      ctx.beginPath();
+      ctx.arc(artCanvas.width/2+x-Math.floor(Math.random()*20), artCanvas.height/2+y, Math.floor(Math.random()*2)+1, 0, Math.PI*2);
+      ctx.fillStyle = asteroidColors[Math.floor(Math.random() * asteroidColors.length)];
+      ctx.fill();
+      ctx.closePath();  
+
+      ctx.beginPath();
+      ctx.arc(artCanvas.width/2-x+Math.floor(Math.random()*20), artCanvas.height/2+y, Math.floor(Math.random()*2)+1, 0, Math.PI*2);
+      ctx.fillStyle = asteroidColors[Math.floor(Math.random() * asteroidColors.length)];
+      ctx.fill();
+      ctx.closePath();  
+
+    }
+  }
 }
