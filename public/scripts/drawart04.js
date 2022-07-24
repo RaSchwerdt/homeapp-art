@@ -47,10 +47,23 @@ let gravityField = {
     this.start = start;
     this.size = size;
     this.mass = size*params.gravityFactor;
-    this.col = "#2f2f2f";
+    this.col = planetColors[Math.floor(Math.random() * planetColors.length)];
   },
 }
 let gravityFields = [];
+let planetColors = [
+  "#ff0000",
+  "#ff00ff",
+  "#00cc00",
+  "#0000ff",
+  "#ff6600",
+  "#ffff00",
+  "#6600ff",
+  "#cc3300",
+  "#cccc00",
+  "#3366cc"
+  ];
+
 
 //Screen interaction ---------------------------------------------------------------
 let artCanvas = document.getElementById('art-canvas');
@@ -313,7 +326,7 @@ function drawGravityFields () {
       //console.log("Field "+i+" x "+obj.x+" y "+obj.y+" size "+obj.size+" start "+obj.start+" speed "+obj.speed);
       ctx.beginPath();
       ctx.arc(obj.x, obj.y, 1, 0, Math.PI*2);
-      ctx.fillStyle = CRASH_COLOR;
+      ctx.fillStyle = obj.col;
       ctx.fill();
       ctx.closePath();  
   }
