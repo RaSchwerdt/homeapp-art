@@ -68,9 +68,6 @@ document.getElementById("full-button").onclick = function () {
 document.getElementById("save-button").onclick = function () {
   saveParams ();
 };
-document.getElementById("read-button").onclick = function () {
-readParams ();
-};
 document.getElementById("simulation-speed").oninput = function () {
   params.simulationSpeed = parseInt(document.getElementById('simulation-speed').value);
   document.getElementById("simulation-speed-value").innerHTML = "("+params.simulationSpeed+")";

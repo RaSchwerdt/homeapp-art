@@ -27,6 +27,7 @@ let params = {
     centralSize: 20,
     ellipseFactor: 1.0,
     clearTrace: true,
+    planetImpact: false,
     planets: [],
 }
 let gravityField = {
@@ -76,9 +77,6 @@ document.getElementById("full-button").onclick = function () {
 };
 document.getElementById("save-button").onclick = function () {
   saveParams ();
-};
-document.getElementById("read-button").onclick = function () {
-readParams ();
 };
 
 //Modal window
@@ -147,7 +145,12 @@ document.getElementById("clear-trace").onchange = function () {
     //console.log ("clear-trace "+params.clearTrace);
     clearCanvas();
 };
-  
+document.getElementById("planet-impact").onchange = function () {
+  params.planetImpact = document.getElementById('planet-impact').checked;
+  //console.log ("planet-impact "+params.planetImpact);
+  clearCanvas();
+};
+
 
 function startLoop () {
     console.log("startLoop");
@@ -220,6 +223,7 @@ function readParams () {
         params.centralSize = res.centralSize;
         params.ellipseFactor = res.ellipseFactor;
         params.clearTrace = res.clearTrace;
+        params.planetImpact = res.planetImpact;
         params.planets = res.planets;
 
         //Init drop down display
@@ -232,6 +236,7 @@ function readParams () {
         document.getElementById("ellipse-factor").value = params.ellipseFactor;
         document.getElementById("ellipse-factor-value").innerHTML = "("+params.ellipseFactor+")";
         document.getElementById("clear-trace").checked = params.clearTrace;
+        document.getElementById("planet-impact").checked = params.planetImpact;
         listPlanets(params.planets);
     }
   }
@@ -282,7 +287,15 @@ function drawToCanvas () {
 
 
 function drawGravityFields () {
-  for (let i=0; i< gravityFields.length; i++) {
+
+  //draw sun
+  ctx.beginPath();
+  ctx.arc(gravityFields[0].x, gravityFields[0].y, gravityFields[0].size, 0, Math.PI*2);
+  ctx.fillStyle = gravityFields[0].col;
+  ctx.fill();
+  ctx.closePath();  
+  
+  for (let i=1; i< gravityFields.length; i++) {
 
       obj = gravityFields[i];
 
@@ -299,9 +312,8 @@ function drawGravityFields () {
       //Draw planet
       //console.log("Field "+i+" x "+obj.x+" y "+obj.y+" size "+obj.size+" start "+obj.start+" speed "+obj.speed);
       ctx.beginPath();
-      ctx.arc(obj.x, obj.y, obj.size, 0, Math.PI*2);
-      ctx.strokeStyle = BACK_COLOR;
-      ctx.fillStyle = obj.col;
+      ctx.arc(obj.x, obj.y, 1, 0, Math.PI*2);
+      ctx.fillStyle = CRASH_COLOR;
       ctx.fill();
       ctx.closePath();  
   }
@@ -310,18 +322,25 @@ function drawGravityFields () {
 
 function calculateSpeed () {
     for (let i=1; i< gravityFields.length; i++) {
-        let obj = gravityFields[i];
+        let obj1 = gravityFields[i];
         //console.log ("i "+i+" angle "+obj.a+" speed "+obj.speed);
 
         //Calculate velocity
-        obj.start += obj.speed;
-        if (obj.start>360) { obj.start -= 360; }     
-        obj.dx = artCanvas.width/2 + obj.dist * params.ellipseFactor * Math.cos(obj.start*2*Math.PI/360) - obj.x;
-        obj.dy = artCanvas.height/2 + obj.dist * Math.sin(obj.start*2*Math.PI/360) - obj.y;
+        obj1.start += obj1.speed;
+        if (obj1.start>360) { obj1.start -= 360; }     
+        obj1.dx = artCanvas.width/2 + obj1.dist * params.ellipseFactor * Math.cos(obj1.start*2*Math.PI/360) - obj1.x;
+        obj1.dy = artCanvas.height/2 + obj1.dist * Math.sin(obj1.start*2*Math.PI/360) - obj1.y;
+        //console.log ("Start dx "+obj1.dx+" dy "+obj1.dy);
 
-        for (j=i+1; j < gravityFields.length; j++) {
-
-          
+        if (params.planetImpact==true) {
+          for (j=i+1; j < gravityFields.length; j++) {
+            let obj2 = gravityFields[j];
+            let distance = Math.sqrt((obj2.x-obj1.x)*(obj2.x-obj1.x) + (obj2.y-obj1.y)*(obj2.y-obj1.y));
+            obj1.dx += obj2.mass*(obj2.x-obj1.x) / Math.pow(distance, 2);
+            obj1.dy += obj2.mass*(obj2.y-obj1.y) / Math.pow(distance, 2);  
+            //console.log ("dx "+obj1.dx+" dy 2 "+obj1.dy);
+          }         
+          //console.log ("End dx "+obj1.dx+" dy "+obj1.dy);  
         }
     }
 }

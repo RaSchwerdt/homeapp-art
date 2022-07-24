@@ -110,9 +110,6 @@ document.getElementById("full-button").onclick = function () {
 document.getElementById("save-button").onclick = function () {
   saveParams ();
 };
-document.getElementById("read-button").onclick = function () {
-readParams ();
-};
 
 //Modal window
 document.getElementById("modal-button").onclick = function () {
