@@ -2,6 +2,8 @@
 const FILE_NAME = "drawart03.txt";
 const BACK_COLOR = '#010101';
 const CRASH_COLOR = '#ff004c';
+const X_SPACE_EXTEND = 200;
+const Y_SPACE_EXTEND = 100;
 let loopInterval = null;
 let loopCount = 0;
 let modalparams = {
@@ -324,7 +326,7 @@ function drawToCanvas () {
     ctx.clearRect(0, 0, artCanvas.width, artCanvas.height);
   }
 
-  drawGravityFields(true);
+  //drawGravityFields(true);
   calculateSpeed();
   movePlanets();
   drawGravityFields(false);
@@ -441,13 +443,13 @@ function calculateAsteroidVelocity () {
 function moveAsteroids () {
   for (let i=0; i< asteroids.length; i++) {
     let leftSpace = false;
-    if (asteroids[i].x <0) {
+    if (asteroids[i].x < -X_SPACE_EXTEND) {
       leftSpace = true;
-    } else if (asteroids[i].x>artCanvas.width) {
+    } else if (asteroids[i].x>artCanvas.width+X_SPACE_EXTEND) {
       leftSpace = true;
-    } else if (asteroids[i].y <0) {
+    } else if (asteroids[i].y <-Y_SPACE_EXTEND) {
       leftSpace = true;
-    } else if (asteroids[i].y>artCanvas.height) {
+    } else if (asteroids[i].y>artCanvas.height+Y_SPACE_EXTEND) {
       leftSpace = true;
     }
 
@@ -477,28 +479,6 @@ function addAsteroid () {
     params.asteroidSize));
 }
 
-function drawAsteroidBelt () {
-  for (let y=0; y<artCanvas.height; y=y+7) {
-    for (let j=0; j <1; j++) {
-      let x = Math.floor(Math.random()*20);
-
-      ctx.beginPath();
-      ctx.arc(x, y, Math.floor(Math.random()*3)+1, 0, Math.PI*2);
-      ctx.fillStyle = asteroidColors[Math.floor(Math.random() * asteroidColors.length)];
-      ctx.fill();
-      ctx.closePath();  
-
-      //console.log("x "+x+" width "+artCanvas.width+" pos "+(artCanvas.width-x)+" y "+y);
-      ctx.beginPath();
-      ctx.arc((artCanvas.width-x), y, Math.floor(Math.random()*3)+1, 0, Math.PI*2);
-      ctx.fillStyle = asteroidColors[Math.floor(Math.random() * asteroidColors.length)];
-      ctx.fill();
-      ctx.closePath();
-    }
-
-  }
-
-}
 
 function drawAsteroidBeltEllipse () {
 
