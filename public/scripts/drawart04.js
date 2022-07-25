@@ -53,15 +53,14 @@ let gravityField = {
 let gravityFields = [];
 let planetColors = [
   "#ff0000",
-  "#ff00ff",
-  "#00cc00",
-  "#0000ff",
-  "#ff6600",
+  "#ff9900",
   "#ffff00",
-  "#6600ff",
-  "#cc3300",
-  "#cccc00",
-  "#3366cc"
+  "#ff00ff",
+  "#00ccff",
+  "#ffff00",
+  "#00ff00",
+  "#ff0088",
+  "#ffffff",
   ];
 
 
@@ -324,11 +323,21 @@ function drawGravityFields () {
 
       //Draw planet
       //console.log("Field "+i+" x "+obj.x+" y "+obj.y+" size "+obj.size+" start "+obj.start+" speed "+obj.speed);
-      ctx.beginPath();
-      ctx.arc(obj.x, obj.y, 1, 0, Math.PI*2);
-      ctx.fillStyle = obj.col;
-      ctx.fill();
-      ctx.closePath();  
+      if (params.clearTrace==false) {
+        ctx.beginPath();
+        ctx.arc(obj.x, obj.y, 1, 0, Math.PI*2);
+        ctx.fillStyle = obj.col;
+        ctx.fill();
+        ctx.closePath();          
+      } else {
+        ctx.beginPath();
+        ctx.arc(obj.x, obj.y, obj.size/2, 0, Math.PI*2);
+        ctx.setLineDash([]);
+        ctx.strokeStyle = obj.col;
+        ctx.stroke();
+        ctx.closePath();
+  
+      }     
   }
   
 }
@@ -351,6 +360,9 @@ function calculateSpeed () {
             let distance = Math.sqrt((obj2.x-obj1.x)*(obj2.x-obj1.x) + (obj2.y-obj1.y)*(obj2.y-obj1.y));
             obj1.dx += obj2.mass*(obj2.x-obj1.x) / Math.pow(distance, 2);
             obj1.dy += obj2.mass*(obj2.y-obj1.y) / Math.pow(distance, 2);  
+
+            obj2.dx += obj1.mass*(obj1.x-obj2.x) / Math.pow(distance, 2);
+            obj2.dy += obj1.mass*(obj1.y-obj2.y) / Math.pow(distance, 2);  
             //console.log ("dx "+obj1.dx+" dy 2 "+obj1.dy);
           }         
           //console.log ("End dx "+obj1.dx+" dy "+obj1.dy);  

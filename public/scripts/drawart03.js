@@ -29,7 +29,8 @@ let params = {
     ellipseFactor: 1.0,
     asteroidAppearance: 50,
     asteroidSize: 2,
-    clearTrace: 0,
+    clearTrace: true,
+    planetImpact: false,
     planets: [],
 }
 let gravityField = {
@@ -49,9 +50,21 @@ let gravityField = {
     this.start = start;
     this.size = size;
     this.mass = size*params.gravityFactor;
-    this.col = "#2f2f2f";
+    this.col = planetColors[Math.floor(Math.random() * planetColors.length)];
   },
 }
+let planetColors = [
+  "#ffe6ff",
+  "#ffe6b3",
+  "#cceeff",
+  "#f2e6ff",
+  "#ffe6cc",
+  "#e0ebeb",
+  "#ccccff",
+  "#ccffcc",
+  "#ffffe6",
+  ];
+
 let gravityFields = [];
 let asteroid = {
   x: 0,
@@ -188,6 +201,11 @@ document.getElementById("clear-trace").onchange = function () {
   //console.log ("clear-trace "+params.clearTrace);
   clearCanvas();
 };
+document.getElementById("planet-impact").onchange = function () {
+  params.planetImpact = document.getElementById('planet-impact').checked;
+  //console.log ("planet-impact "+params.planetImpact);
+  clearCanvas();
+};
 
 
 function startLoop () {
@@ -266,6 +284,7 @@ function readParams () {
         params.asteroidAppearance = res.asteroidAppearance;
         params.asteroidSize = res.asteroidSize;
         params.clearTrace = res.clearTrace;
+        params.planetImpact = res.planetImpact;
         params.planets = res.planets;
 
         //Init drop down display
@@ -282,6 +301,7 @@ function readParams () {
         document.getElementById("asteroid-size").value = params.asteroidSize;
         document.getElementById("asteroid-size-value").innerHTML = "("+params.asteroidSize+")";
         document.getElementById("clear-trace").checked = params.clearTrace;
+        document.getElementById("planet-impact").checked = params.planetImpact;
         listPlanets(params.planets);
     }
   }
@@ -323,11 +343,9 @@ function drawToCanvas () {
     ctx.clearRect(0, 0, artCanvas.width, artCanvas.height);
   }
 
-  //drawGravityFields(true);
   calculateSpeed();
   movePlanets();
-  drawGravityFields(false);
-
+  drawGravityFields();
   drawAsteroidBeltEllipse();
   drawAsteroids();
   calculateAsteroidVelocity();
@@ -341,52 +359,76 @@ function drawToCanvas () {
 }
 
 
-function drawGravityFields (clear) {
-  for (let i=0; i< gravityFields.length; i++) {
-
-      obj = gravityFields[i];
-
-      //Draw planet curve
-      ctx.beginPath();
-      //ctx.arc(artCanvas.width/2, artCanvas.height/2, obj.dist, 0, Math.PI*2);
-      ctx.ellipse(artCanvas.width/2, artCanvas.height/2, obj.dist * params.ellipseFactor, obj.dist, 0, 0, Math.PI*2);
-      ctx.lineWidth = 1;  
-      ctx.setLineDash([4, 8]);
-      ctx.strokeStyle = '#2f2f2f';
-      ctx.stroke();
-      ctx.closePath();
-
-      //Draw planet
-      //console.log("Field "+i+" x "+obj.x+" y "+obj.y+" size "+obj.size+" col "+obj.col);
-      ctx.beginPath();
-      ctx.arc(obj.x, obj.y, obj.size, 0, Math.PI*2);
-      ctx.strokeStyle = BACK_COLOR;
-      if (clear == true) {
-          ctx.fillStyle = BACK_COLOR;
-      } else {
-        if (obj.crash == true) {
-          ctx.fillStyle = CRASH_COLOR;
-          obj.crash = false;
-        } else {
-          ctx.fillStyle = obj.col;
-        }
-      }
-      ctx.fill();
-      ctx.closePath();  
+function drawGravityFields () {
+  //draw sun
+  ctx.beginPath();
+  ctx.arc(gravityFields[0].x, gravityFields[0].y, gravityFields[0].size, 0, Math.PI*2);
+  if (gravityFields[0].crash == true) {
+    ctx.fillStyle = CRASH_COLOR;
+    gravityFields[0].crash = false;
+  } else {
+    ctx.fillStyle = gravityFields[0].col;
   }
+  ctx.fill();
+  ctx.closePath();  
   
+  for (let i=1; i< gravityFields.length; i++) {
+
+    obj = gravityFields[i];
+
+    //Draw planet curve
+    ctx.beginPath();
+    //ctx.arc(artCanvas.width/2, artCanvas.height/2, obj.dist, 0, Math.PI*2);
+    ctx.ellipse(artCanvas.width/2, artCanvas.height/2, obj.dist * params.ellipseFactor, obj.dist, 0, 0, Math.PI*2);
+    ctx.lineWidth = 1;  
+    ctx.setLineDash([4, 8]);
+    ctx.strokeStyle = '#2f2f2f';
+    ctx.stroke();
+    ctx.closePath();
+
+    //Draw planet
+    //console.log("Field "+i+" x "+obj.x+" y "+obj.y+" size "+obj.size+" col "+obj.col);
+    let size = obj.size;
+    if (params.clearTrace==false) {
+      size = 1;
+    }
+    ctx.beginPath();
+    ctx.arc(obj.x, obj.y, size, 0, Math.PI*2);
+    ctx.strokeStyle = BACK_COLOR;
+    if (obj.crash == true) {
+      ctx.fillStyle = CRASH_COLOR;
+      obj.crash = false;
+    } else {
+      ctx.fillStyle = obj.col;
+    }
+    ctx.fill();
+    ctx.closePath();  
+  }
 }
 
 function calculateSpeed () {
   for (let i=1; i< gravityFields.length; i++) {
-      let obj = gravityFields[i];
+      let obj1 = gravityFields[i];
       //console.log ("i "+i+" angle "+obj.a+" speed "+obj.speed);
 
       //Calculate velocity
-      obj.start += obj.speed;
-      if (obj.start>360) { obj.start -= 360; }     
-      obj.dx = artCanvas.width/2 + obj.dist * params.ellipseFactor * Math.cos(obj.start*2*Math.PI/360) - obj.x;
-      obj.dy = artCanvas.height/2 + obj.dist * Math.sin(obj.start*2*Math.PI/360) - obj.y;
+      obj1.start += obj1.speed;
+      if (obj1.start>360) { obj1.start -= 360; }     
+      obj1.dx = artCanvas.width/2 + obj1.dist * params.ellipseFactor * Math.cos(obj1.start*2*Math.PI/360) - obj1.x;
+      obj1.dy = artCanvas.height/2 + obj1.dist * Math.sin(obj1.start*2*Math.PI/360) - obj1.y;
+      if (params.planetImpact==true) {
+        for (j=i+1; j < gravityFields.length; j++) {
+          let obj2 = gravityFields[j];
+          let distance = Math.sqrt((obj2.x-obj1.x)*(obj2.x-obj1.x) + (obj2.y-obj1.y)*(obj2.y-obj1.y));
+          obj1.dx += obj2.mass*(obj2.x-obj1.x) / Math.pow(distance, 2);
+          obj1.dy += obj2.mass*(obj2.y-obj1.y) / Math.pow(distance, 2);  
+
+          obj2.dx += obj1.mass*(obj1.x-obj2.x) / Math.pow(distance, 2);
+          obj2.dy += obj1.mass*(obj1.y-obj2.y) / Math.pow(distance, 2);  
+          //console.log ("dx "+obj1.dx+" dy 2 "+obj1.dy);
+        }         
+        //console.log ("End dx "+obj1.dx+" dy "+obj1.dy);  
+      }
   }
 }
 
@@ -479,7 +521,7 @@ function addAsteroid () {
 
 function drawAsteroidBeltEllipse () {
 
-  console.log ("width "+(artCanvas.width)+" height "+(artCanvas.height));
+  //console.log ("width "+(artCanvas.width)+" height "+(artCanvas.height));
   for (let i=0; i<artCanvas.height; i=i+7) {
     for (let j=0; j <3; j++) {
 
