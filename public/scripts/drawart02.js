@@ -195,7 +195,7 @@ function clearCanvas () {
 
 function drawToCanvas () {
   //console.log ("Draw to canvas");
-  if (params.clearTrace==1) {
+  if (params.clearTrace==true) {
     ctx.clearRect(0, 0, artCanvas.width, artCanvas.height);
   }
   drawParts();

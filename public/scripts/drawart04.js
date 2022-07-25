@@ -312,14 +312,15 @@ function drawGravityFields () {
       obj = gravityFields[i];
 
       //Draw planet curve
-      ctx.beginPath();
-      //ctx.arc(artCanvas.width/2, artCanvas.height/2, obj.dist, 0, Math.PI*2);
-      ctx.ellipse(artCanvas.width/2, artCanvas.height/2, obj.dist * params.ellipseFactor, obj.dist, 0, 0, Math.PI*2);
-      ctx.lineWidth = 1;  
-      ctx.setLineDash([4, 8]);
-      ctx.strokeStyle = '#2f2f2f';
-      ctx.stroke();
-      ctx.closePath();
+      if (params.clearTrace==true) {
+        ctx.beginPath();
+        ctx.ellipse(artCanvas.width/2, artCanvas.height/2, obj.dist * params.ellipseFactor, obj.dist, 0, 0, Math.PI*2);
+        ctx.lineWidth = 1;  
+        ctx.setLineDash([4, 8]);
+        ctx.strokeStyle = '#2f2f2f';
+        ctx.stroke();
+        ctx.closePath();  
+      }
 
       //Draw planet
       //console.log("Field "+i+" x "+obj.x+" y "+obj.y+" size "+obj.size+" start "+obj.start+" speed "+obj.speed);

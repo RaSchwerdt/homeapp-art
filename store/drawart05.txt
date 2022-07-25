@@ -1,0 +1,1 @@
+{"file":"drawart05.txt","simulationSpeed":100,"pushFactor":1,"numBalls":10,"minSize":7,"maxSize":12,"gravityFactor":12,"ellipseFactor":1.4,"clearTrace":true}
