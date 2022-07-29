@@ -3,18 +3,46 @@ const FILE_NAME = "drawart05.txt";
 let loopInterval = null;
 let loopCount = 0;
 let CRASH_COLOR = "#2d862d";
+let GRAVITY_COLOR = "#666666"
+let gravityField = {
+  dist: 0, //distance from center
+  start: 0, //angle in radians 0-360
+  size: 0, //size of planet
+  speed: 0, //Angle velocity
+  x: 0,
+  y: 0,
+  dx: 0,
+  dy: 0,
+  mass: 0,
+  col: null,
+  init: function (dist, start, size, speed) {
+    //console.log ("Ini "+dist+", "+start+", "+size+", "+speed)
+    this.dist = dist;
+    this.start = start;
+    this.size = size;
+    this.speed = speed;
+    this.mass = size*params.gravityFactor;
+  },
+}
 let params = {
     file: FILE_NAME,
     simulationSpeed: 80,
     pushFactor: 1.0,
+    ballSpeed: 0,
     numBalls: 10,
     minSize: 10,
     maxSize: 10,
     gravityFactor: 5,
     ellipseFactor: 1.0,
     clearTrace: true,
+    fields: [],
 }
-  
+let modParam = {
+  dist: 0,
+  start: 0,
+  size:5,
+  speed:0,
+} 
 let ball = {
   x: 0,
   y: 0,
@@ -74,6 +102,49 @@ document.getElementById("full-button").onclick = function () {
 document.getElementById("save-button").onclick = function () {
     saveParams ();
 };
+
+//Modal window
+document.getElementById("modal-button").onclick = function () {
+  document.getElementById("gravity-modal").style.display = "block";
+  document.getElementById('modal-distance').value = modParam.dist;
+  document.getElementById('modal-start').value = modParam.start;
+  document.getElementById('modal-size').value = modParam.size;
+  document.getElementById('modal-speed').value = modParam.speed;
+};
+document.getElementById("modal-save").onclick = function () {
+    console.log ("Params "+modParam.dist+", "+modParam.start+", "+modParam.speed+", "+modParam.size+", "+modParam.speed);
+    params.fields.push(new gravityField.init(modParam.dist, modParam.start, modParam.size, modParam.speed));
+    listGravityFields(params.fields);
+  document.getElementById("gravity-modal").style.display = "none";
+  clearCanvas();
+};
+document.getElementById("modal-remove").onclick = function () {
+  params.fields.pop();
+  //console.log ("modal-remove "+params.planets.length);
+  listGravityFields(params.fields);
+  clearCanvas();
+};
+document.getElementById("modal-close").onclick = function () {
+  document.getElementById("gravity-modal").style.display = "none";
+};
+document.getElementById("modal-distance").oninput = function () {
+  modParam.dist = parseInt(document.getElementById('modal-distance').value);
+  document.getElementById("modal-distance-value").innerHTML = "("+modParam.dist+")";
+};
+document.getElementById("modal-start").oninput = function () {
+  modParam.start = parseInt(document.getElementById('modal-start').value);
+  document.getElementById("modal-start-value").innerHTML = "("+modParam.start+")";
+};
+document.getElementById("modal-size").oninput = function () {
+  modParam.size = parseInt(document.getElementById('modal-size').value);
+  document.getElementById("modal-size-value").innerHTML = "("+modParam.size+")";
+};
+document.getElementById("modal-speed").oninput = function () {
+  modParam.speed = parseInt(document.getElementById('modal-speed').value);
+  document.getElementById("modal-speed-value").innerHTML = "("+modParam.speed+")";
+};
+
+//Input elements
 document.getElementById("simulation-speed").oninput = function () {
     params.simulationSpeed = parseInt(document.getElementById('simulation-speed').value);
     document.getElementById("simulation-speed-value").innerHTML = "("+params.simulationSpeed+")";
@@ -85,6 +156,12 @@ document.getElementById("push-factor").oninput = function () {
     document.getElementById("push-factor-value").innerHTML = "("+params.pushFactor+")";
     //console.log ("push-factor "+params.pushFactor);
     clearCanvas();
+};
+document.getElementById("ball-speed").oninput = function () {
+  params.ballSpeed = parseFloat(document.getElementById('ball-speed').value);
+  document.getElementById("ball-speed-value").innerHTML = "("+params.ballSpeed+")";
+  //console.log ("ball-speed "+params.ballSpeed);
+  clearCanvas();
 };
 document.getElementById("num-balls").oninput = function () {
     params.numBalls = parseInt(document.getElementById('num-balls').value);
@@ -125,6 +202,19 @@ document.getElementById("clear-trace").onchange = function () {
 
 function startLoop () {
   console.log("startLoop");
+
+  //Calculate initial positions of gravity fields
+  for (i=0; i < params.fields.length; i++) {
+
+    let obj = params.fields[i];
+    obj.x = artCanvas.width/2 + obj.dist * params.ellipseFactor * Math.cos(obj.start*2*Math.PI/360);
+    obj.y = artCanvas.height/2 + obj.dist * Math.sin(obj.start*2*Math.PI/360);
+    obj.col = GRAVITY_COLOR;
+    console.log ("field "+(i)+" dist "+obj.dist+" start "+obj.start+" size "+obj.size+" x "+obj.x+" y "+obj.y+" speed "+obj.speed+" col "+obj.col);
+
+  }
+
+  //Create balls
   if (balls.length==0) {
     console.log ("Init balls "+params.ballSize);
   
@@ -133,8 +223,8 @@ function startLoop () {
       balls[i] = new ball.init ( 
         Math.floor(Math.random()*artCanvas.width), 
         Math.floor(Math.random()*artCanvas.height),
-        Math.floor(Math.random()*6)-3,
-        Math.floor(Math.random()*4)-2,
+        Math.floor(Math.random()*params.ballSpeed)-params.ballSpeed/2,
+        Math.floor(Math.random()*params.ballSpeed)-params.ballSpeed/2,
         Math.floor(Math.random() * (params.maxSize-params.minSize))+params.minSize,
         )
         if (balls[i].x<balls[i].rad) {balls[i].x += balls[i].rad;}
@@ -187,18 +277,22 @@ function readParams () {
         //Init param values
         params.simulationSpeed = res.simulationSpeed;
         params.pushFactor = res.pushFactor;
+        params.ballSpeed = res.ballSpeed;
         params.numBalls = res.numBalls;
         params.minSize = res.minSize;
         params.maxSize = res.maxSize;
         params.gravityFactor = res.gravityFactor;
         params.ellipseFactor = res.ellipseFactor;
         params.clearTrace = res.clearTrace;
+        params.fields = res.fields;
 
         //Init drop down display
         document.getElementById("simulation-speed").value = params.simulationSpeed;
         document.getElementById("simulation-speed-value").innerHTML = "("+params.simulationSpeed+")";
         document.getElementById("push-factor").value = params.pushFactor;
         document.getElementById("push-factor-value").innerHTML = "("+params.pushFactor+")";
+        document.getElementById("push-factor").value = params.ballSpeed;
+        document.getElementById("push-factor-value").innerHTML = "("+params.ballSpeed+")";
         document.getElementById("num-balls").value = res.numBalls;
         document.getElementById("num-balls-value").innerHTML = "("+params.numBalls+")";
         document.getElementById("min-size").value = params.minSize;
@@ -210,37 +304,85 @@ function readParams () {
         document.getElementById("ellipse-factor").value = params.ellipseFactor;
         document.getElementById("ellipse-factor-value").innerHTML = "("+params.ellipseFactor+")";
         document.getElementById("clear-trace").checked = params.clearTrace;
+        listGravityFields(params.fields);
     }
   }
 
   dynRequest.open ('GET', '/parread?file='+FILE_NAME, true);
   dynRequest.send();
 }
+function listGravityFields (arr) {
+  let list = document.getElementById("list-gravity-fields")
+  while (list.hasChildNodes()) {
+    //console.log ("Remove childs");
+    list.removeChild(list.firstChild);
+  }
+  for (i=0; i <arr.length; i++) {
+    let gravityString = "Gravity field "+(i+1)+": Distance from center "+arr[i].dist+", Start angle "+arr[i].start+", Gravity power "+arr[i].size+", Angle speed "+arr[i].speed;
+    //console.log (planetString);
+    let listItem = document.createElement("li")
+    listItem.setAttribute('class', 'list-group-item')
+    listItem.innerHTML = gravityString;
+    list.appendChild(listItem);
+  }
+}
+
 
 //Drawing ---------------------------------------------------------------
 function clearCanvas () {
     console.log("Clear canvas");
     ctx.clearRect(0, 0, artCanvas.width, artCanvas.height);
     balls = [];
-    crashes = [];
     clearInterval(loopInterval);
     loopInterval = null;
   }
 
-function drawToCanvas () {
-  //console.log ("Draw to canvas");
-  if (params.clearTrace==true) {
-    ctx.clearRect(0, 0, artCanvas.width, artCanvas.height);
+  function drawToCanvas () {
+    //console.log ("Draw to canvas "+params.clearTrace);
+    if (params.clearTrace==true) {
+      ctx.clearRect(0, 0, artCanvas.width, artCanvas.height);
+    }
+  
+    drawGravityFields();
+    drawBalls();
+    calculateGravityImpact();
+    detectCollisions();
+    bounceOffWalls();
+    moveBalls();
+    if (loopCount % 1000 == 0) {
+      calculateEnergy();
+    }
+
+    loopCount++;
+    //console.log("Loop count "+loopCount+"Asteroid appearance "+params.asteroidAppearance);
   }
-  drawBalls();
-  bounceOffWalls();
-  detectCollisions();
-  moveBalls();
-  if (loopCount % 1000 == 0) {
-    calculateEnergy();
+  
+
+function drawGravityFields () {
+
+  for (let i=0; i< params.fields.length; i++) {
+
+    obj = params.fields[i];
+
+    //Draw planet
+    //console.log("Field "+i+" x "+obj.x+" y "+obj.y+" size "+obj.size+" start "+obj.start+" speed "+obj.speed);
+    if (params.clearTrace==false) {
+      ctx.beginPath();
+      ctx.arc(obj.x, obj.y, 1, 0, Math.PI*2);
+      ctx.fillStyle = obj.col;
+      ctx.fill();
+      ctx.closePath();          
+    } else {
+      ctx.beginPath();
+      ctx.arc(obj.x, obj.y, obj.size, 0, Math.PI*2);
+      ctx.setLineDash([]);
+      ctx.strokeStyle = obj.col;
+      ctx.stroke();
+      ctx.closePath();
+
+    }     
   }
 
-  loopCount++;
 }
 
 function drawBalls () {
@@ -279,6 +421,25 @@ function moveBalls () {
     balls[i].y += balls[i].dy;
   }
 }
+
+function calculateGravityImpact () {
+
+  for (let i=0; i< balls.length; i++) {
+    //console.log ("i "+i);
+    let obj1 = balls[i];
+
+    for (let j=0; j< params.fields.length; j++) {
+      //console.log ("j "+j);
+      let obj2 = params.fields[j];
+
+      let distance = Math.sqrt((obj2.x-obj1.x)*(obj2.x-obj1.x) + (obj2.y-obj1.y)*(obj2.y-obj1.y));
+        obj1.dx += obj2.mass*(obj2.x-obj1.x) / Math.pow(distance, 2);
+        obj1.dy += obj2.mass*(obj2.y-obj1.y) / Math.pow(distance, 2);  
+    }
+  }
+
+}
+
 
 function detectCollisions () {
   for (let i=0; i< balls.length; i++) {

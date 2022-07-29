@@ -19,12 +19,17 @@
                     <span id="push-factor-value" style="color:red;"></span>
                     <input type="range" class="form-range" min="0.5" max="1.5" step="0.1" id="push-factor">
                 </div> 
+                <div class="col">
+                    <label>Ball speed 0-10</label>
+                    <span id="ball-speed-value" style="color:red;"></span>
+                    <input type="range" class="form-range" min="0" max="10" step="2" id="ball-speed">
+                </div> 
             </div> 
             <div class="mb-3 row">
                 <div class="col">
-                    <label>Number of balls 5-50</label>
+                    <label>Number of balls 1-50</label>
                     <span id="num-balls-value" style="color:red;"></span>
-                    <input type="range" class="form-range" min="5" max="50" step="5" id="num-balls">
+                    <input type="range" class="form-range" min="1" max="50" step="1" id="num-balls">
                 </div> 
                 <div class="col">
                     <label>Ball minimum size 1-10</label>
@@ -39,22 +44,71 @@
             </div> 
             <div class="mb-3 row">
                 <div class="col">
-                    <label>Gravity factor 5-20</label>
+                    <label>Gravity factor 1-20</label>
                     <span id="gravity-factor-value" style="color:red;"></span>
-                    <input type="range" class="form-range" min="5" max="20" step="1" id="gravity-factor">
+                    <input type="range" class="form-range" min="1" max="20" step="1" id="gravity-factor">
                 </div>
                 <div class="col">
                     <label>Ellipse factor 1.0-2.0</label>
                     <span id="ellipse-factor-value" style="color:red;"></span>
                     <input type="range" class="form-range" min="1.0" max="2.0" step="0.1" id="ellipse-factor">
                 </div>
+                <div class="mb-3 row">
+                    <div id="list-gravity-fields" class="list-group">
+                    </div>
+                </div>
+    
             </div>
                 <div class="form-check form-switch">
                 <input class="form-check-input" type="checkbox" id="clear-trace">
                 <label class="form-check-label" for="clear-trace">Clear trace</label>    
             </div>
             <%- include('../partials/buttons-params') %>
-        </div>       
+            <button id="modal-remove" type="button" class="btn btn-primary">Remove Gravity Field</button>
+            <button id="modal-button" type="button" class="btn btn-primary" data-toggle="modal" data-target="#gravity-modal">Add Gravity Field</button>
+            <div class="modal" tabindex="-1" role="dialog" id="gravity-modal">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title">Add Gravity Field</h5>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3 row">
+                            <div class="col">
+                                <label>Distance from center 0-220</label>
+                                <span id="modal-distance-value" style="color:red;"></span>
+                                <input type="range" class="form-range" min="0" max="220" step="5" id="modal-distance">
+                            </div>
+                        </div>
+                        <div class="mb-3 row">
+                            <div class="col">
+                                <label>Start angle 0-350</label>
+                                <span id="modal-start-value" style="color:red;"></span>
+                                <input type="range" class="form-range" min="0" max="350" step="10" id="modal-start">
+                            </div>
+                        </div>
+                        <div class="mb-3 row">
+                            <div class="col">
+                                <label>Size 5-30</label>
+                                <span id="modal-size-value" style="color:red;"></span>
+                                <input type="range" class="form-range" min="5" max="30" step="1" id="modal-size">
+                            </div>
+                        </div>
+                        <div class="mb-3 row">
+                            <div class="col">
+                                <label>Angle speed 0-10</label>
+                                <span id="modal-speed-value" style="color:red;"></span>
+                                <input type="range" class="form-range" min="0" max="10" step="1" id="modal-speed">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                      <button id="modal-save" type="button" class="btn btn-primary">Save changes</button>
+                      <button id="modal-close" type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                  </div>
+                </div>
+            </div>       
         <script src="scripts/bootstrap.min.js"></script>
         <script src="scripts/drawart05.js"></script>
     </body>

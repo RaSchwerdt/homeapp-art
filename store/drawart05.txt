@@ -1,1 +1,1 @@
-{"file":"drawart05.txt","simulationSpeed":100,"pushFactor":1,"numBalls":10,"minSize":7,"maxSize":12,"gravityFactor":12,"ellipseFactor":1.4,"clearTrace":true}
+{"file":"drawart05.txt","simulationSpeed":80,"pushFactor":0.9,"ballSpeed":0,"numBalls":2,"minSize":10,"maxSize":10,"gravityFactor":4,"ellipseFactor":1,"clearTrace":true,"fields":[{"dist":0,"start":0,"size":9,"speed":0,"mass":45,"x":426.5,"y":233,"col":"#666666"},{"dist":100,"start":0,"size":9,"speed":0,"mass":36,"x":526.5,"y":233,"col":"#666666"}]}
