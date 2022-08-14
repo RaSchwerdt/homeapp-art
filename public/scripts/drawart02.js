@@ -159,7 +159,7 @@ function readParams () {
         var res = JSON.parse(dynRequest.responseText);
 
         //Init param values
-        params.speed = res.speed;
+        params.simulationSpeed = res.simulationSpeed;
         params.numParts = res.numParts;
         params.partSize = res.partSize;
         params.impactFactor = res.impactFactor;
