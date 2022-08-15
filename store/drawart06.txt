@@ -1,1 +1,1 @@
-{"file":"drawart06.txt","simulationSpeed":550,"timeInterval":0.5,"numParts":10,"partSize":2,"massFactor":3,"gravityFactor":7,"smoothingFactor":3,"clearTrace":true}
+{"file":"drawart06.txt","simulationSpeed":550,"timeInterval":0.5,"numParts":5,"partSize":2,"massFactor":3,"smoothingFactor":3,"gravityFactor":7,"gravityCenterSize":0,"angleSpeed":false,"clearTrace":true}

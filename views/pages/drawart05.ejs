@@ -59,7 +59,7 @@
                 </div>
     
             </div>
-                <div class="form-check form-switch">
+            <div class="form-check form-switch">
                 <input class="form-check-input" type="checkbox" id="clear-trace">
                 <label class="form-check-label" for="clear-trace">Clear trace</label>    
             </div>
@@ -68,47 +68,47 @@
             <button id="modal-button" type="button" class="btn btn-primary" data-toggle="modal" data-target="#gravity-modal">Add Gravity Field</button>
             <div class="modal" tabindex="-1" role="dialog" id="gravity-modal">
                 <div class="modal-dialog" role="document">
-                  <div class="modal-content">
-                    <div class="modal-header">
-                      <h5 class="modal-title">Add Gravity Field</h5>
-                    </div>
-                    <div class="modal-body">
-                        <div class="mb-3 row">
-                            <div class="col">
-                                <label>Distance from center 0-220</label>
-                                <span id="modal-distance-value" style="color:red;"></span>
-                                <input type="range" class="form-range" min="0" max="220" step="5" id="modal-distance">
-                            </div>
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Add Gravity Field</h5>
                         </div>
-                        <div class="mb-3 row">
-                            <div class="col">
-                                <label>Start angle 0-350</label>
-                                <span id="modal-start-value" style="color:red;"></span>
-                                <input type="range" class="form-range" min="0" max="350" step="10" id="modal-start">
+                        <div class="modal-body">
+                            <div class="mb-3 row">
+                                <div class="col">
+                                    <label>Distance from center 0-220</label>
+                                    <span id="modal-distance-value" style="color:red;"></span>
+                                    <input type="range" class="form-range" min="0" max="220" step="5" id="modal-distance">
+                                </div>
                             </div>
-                        </div>
-                        <div class="mb-3 row">
-                            <div class="col">
-                                <label>Size 5-30</label>
-                                <span id="modal-size-value" style="color:red;"></span>
-                                <input type="range" class="form-range" min="5" max="30" step="1" id="modal-size">
+                            <div class="mb-3 row">
+                                <div class="col">
+                                    <label>Start angle 0-350</label>
+                                    <span id="modal-start-value" style="color:red;"></span>
+                                    <input type="range" class="form-range" min="0" max="350" step="10" id="modal-start">
+                                </div>
                             </div>
-                        </div>
-                        <div class="mb-3 row">
-                            <div class="col">
-                                <label>Angle speed 0-10</label>
-                                <span id="modal-speed-value" style="color:red;"></span>
-                                <input type="range" class="form-range" min="0" max="10" step="1" id="modal-speed">
+                            <div class="mb-3 row">
+                                <div class="col">
+                                    <label>Size 5-30</label>
+                                    <span id="modal-size-value" style="color:red;"></span>
+                                    <input type="range" class="form-range" min="5" max="30" step="1" id="modal-size">
+                                </div>
+                            </div>
+                            <div class="mb-3 row">
+                                <div class="col">
+                                    <label>Angle speed 0-10</label>
+                                    <span id="modal-speed-value" style="color:red;"></span>
+                                    <input type="range" class="form-range" min="0" max="10" step="1" id="modal-speed">
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
-                      <button id="modal-save" type="button" class="btn btn-primary">Save changes</button>
-                      <button id="modal-close" type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button id="modal-save" type="button" class="btn btn-primary">Save changes</button>
+                        <button id="modal-close" type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     </div>
-                  </div>
                 </div>
-            </div>       
+            </div>
+        </div>       
         <script src="scripts/bootstrap.min.js"></script>
         <script src="scripts/drawart05.js"></script>
     </body>

@@ -178,22 +178,20 @@ function startLoop () {
     //gravityFields.push(new gravityField.init(artCanvas.width/2, artCanvas.height/2, params.centralSize));
     let arr = params.planets;
     for (i=0; i<arr.length; i++) {
-      //console.log ("Planet "+(i+1)+" dist "+arr[i].dist+" start "+arr[i].start+" size "+arr[i].size);
-      gravityFields[i+1] = new gravityField.init(parseInt(arr[i].dist), parseInt(arr[i].start), parseInt(arr[i].size));
-      let obj = gravityFields[i+1];
+        //console.log ("Planet "+(i+1)+" dist "+arr[i].dist+" start "+arr[i].start+" size "+arr[i].size);
+        gravityFields[i+1] = new gravityField.init(parseInt(arr[i].dist), parseInt(arr[i].start), parseInt(arr[i].size));
+        let obj = gravityFields[i+1];
 
-      //Determine position and speed
-      obj.x = artCanvas.width/2 + obj.dist * params.ellipseFactor * Math.cos(obj.start*2*Math.PI/360);
-      obj.y = artCanvas.height/2 + obj.dist * Math.sin(obj.start*2*Math.PI/360);
-      obj.speed = Math.sqrt(gravityFields[0].mass*params.gravityFactor/obj.dist);
-      console.log ("planet "+(i+1)+" dist "+obj.dist+" start "+obj.start+" size "+obj.size+" x "+obj.x+" y "+obj.y+" speed "+obj.speed);
-  
+        //Determine position and speed
+        obj.x = artCanvas.width/2 + obj.dist * params.ellipseFactor * Math.cos(obj.start*2*Math.PI/360);
+        obj.y = artCanvas.height/2 + obj.dist * Math.sin(obj.start*2*Math.PI/360);
+        obj.speed = Math.sqrt(gravityFields[0].mass*params.gravityFactor/obj.dist);
+        console.log ("planet "+(i+1)+" dist "+obj.dist+" start "+obj.start+" size "+obj.size+" x "+obj.x+" y "+obj.y+" speed "+obj.speed);  
     }
 
     if (loopInterval == null) {
-      loopInterval = setInterval(drawToCanvas, params.simulationSpeed);  
+        loopInterval = setInterval(drawToCanvas, params.simulationSpeed);  
     }
-  
 }
   
 function stopLoop () {
