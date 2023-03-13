@@ -5,7 +5,7 @@
 </head>
     <body>
         <div class="container">
-            <h1>Computer Art - Gravity Dust</h1>
+            <h1>Computer Art - Simulate Multi Part Systems</h1>
             <%- include('../partials/canvas') %>
             <%- include('../partials/buttons-canvas') %>
             <div class="mb-3 row">
@@ -15,26 +15,49 @@
                     <input type="range" class="form-range" min="100" max="2000" step="50" id="simulation-speed">
                 </div>
                 <div class="col">
-                    <label>Number of parts 10-500</label>
-                    <span id="num-parts-value" style="color:red;"></span>
-                    <input type="range" class="form-range" min="50" max="500" step="50" id="num-parts">
-                </div> 
+                    <label>Time interval 0.1-5.0</label>
+                    <span id="time-interval-value" style="color:red;"></span>
+                    <input type="range" class="form-range" min="0.1" max="5.0" step="0.1" id="time-interval">
+                </div>
             </div> 
             <div class="mb-3 row">
+                <div class="col">
+                    <label>Number of parts 5-200</label>
+                    <span id="num-parts-value" style="color:red;"></span>
+                    <input type="range" class="form-range" min="5" max="200" step="5" id="num-parts">
+                </div> 
                 <div class="col">
                     <label>Part size 1-10</label>
                     <span id="part-size-value" style="color:red;"></span>
                     <input type="range" class="form-range" min="1" max="10" step="1" id="part-size">
                 </div>
+            </div> 
+            <div class="mb-3 row">
                 <div class="col">
-                    <label>Impact factor</label>
-                    <span id="impact-factor-value" style="color:red;"></span>
-                    <input type="range" class="form-range" min="0.1" max="0.9" step="0.1" id="impact-factor">
+                    <label>Mass factor 1-10</label>
+                    <span id="mass-factor-value" style="color:red;"></span>
+                    <input type="range" class="form-range" min="1" max="10" step="1" id="mass-factor">
+                </div>
+                <div class="col">
+                    <label>Smoothing Factor 2-10</label>
+                    <span id="smoothing-factor-value" style="color:red;"></span>
+                    <input type="range" class="form-range" min="2" max="10" step="1" id="smoothing-factor">
+                </div>
+                <div class="col">
+                    <label>Gravity Factor 1-20</label>
+                    <span id="gravity-factor-value" style="color:red;"></span>
+                    <input type="range" class="form-range" min="1" max="20" step="1" id="gravity-factor">
                 </div>
             </div> 
             <div class="form-check form-switch">
-                <input class="form-check-input" type="checkbox" id="clear-trace">
-                <label class="form-check-label" for="clear-trace">Clear trace</label>    
+                <div>
+                    <input class="form-check-input" type="checkbox" id="parts-crash">
+                    <label class="form-check-label" for="parts-crash">Parts crash</label>        
+                </div>
+                <div>
+                    <input class="form-check-input" type="checkbox" id="clear-trace">
+                    <label class="form-check-label" for="clear-trace">Clear trace</label>        
+                </div>
             </div>
             <%- include('../partials/buttons-params') %>
         </div>

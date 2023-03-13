@@ -10,8 +10,7 @@ let params = {
     massFactor: 1,
     smoothingFactor: 2,
     gravityFactor: 1,
-    gravityCenterSize: 0,
-    angleSpeed: false,
+    partsCrash: false,
     clearTrace: true,
 }
 let part = {
@@ -128,20 +127,14 @@ document.getElementById("smoothing-factor").oninput = function () {
     //console.log ("smoothing-factor "+params.gravityFactor);
     clearCanvas();
 };
-document.getElementById("gravity-center").oninput = function () {
-    params.gravityCenterSize = parseInt(document.getElementById('gravity-center').value);
-    document.getElementById("gravity-center-value").innerHTML = "("+params.gravityCenterSize+")";
-    //console.log ("gravity-center "+params.gravityCenterSize);
-    clearCanvas();
-};
-document.getElementById("angle-speed").onchange = function () {
-    params.angleSpeed = document.getElementById('angle-speed').checked;
-    //console.log ("angle-speed "+params.clearTrace);
+document.getElementById("parts-crash").onchange = function () {
+    params.partsCrash = document.getElementById('parts-crash').checked;
+    //console.log ("parts-crash "+params.partsCrash);
     clearCanvas();
 };
 document.getElementById("clear-trace").onchange = function () {
     params.clearTrace = document.getElementById('clear-trace').checked;
-    //console.log ("clear-trace "+params.angleSpeed);
+    //console.log ("clear-trace "+params.clearTrace);
     clearCanvas();
 };
 
@@ -214,8 +207,7 @@ function readParams () {
         params.massFactor = res.massFactor;
         params.smoothingFactor = res.smoothingFactor;
         params.gravityFactor = res.gravityFactor;
-        params.gravityCenterSize = res.gravityCenterSize;
-        params.angleSpeed = res.angleSpeed;
+        params.partsCrash = res.partsCrash;
         params.clearTrace = res.clearTrace;
 
         //Init drop down display
@@ -233,9 +225,7 @@ function readParams () {
         document.getElementById("smoothing-factor-value").innerHTML = "("+params.smoothingFactor+")";
         document.getElementById("gravity-factor").value = params.gravityFactor;
         document.getElementById("gravity-factor-value").innerHTML = "("+params.gravityFactor+")";
-        document.getElementById("gravity-center").value = params.gravityCenterSize;
-        document.getElementById("gravity-center-value").innerHTML = "("+params.gravityCenterSize+")";
-        document.getElementById("angle-speed").checked = params.angleSpeed;
+        document.getElementById("parts-crash").checked = params.partsCrash;
         document.getElementById("clear-trace").checked = params.clearTrace;
     }
   }
@@ -261,7 +251,6 @@ function drawToCanvas () {
   calculateGravityCenter();
   drawParts();
   drawGravityCenter();
-  //calculateAngleVelocity();
   calculatePartAcceleration();
   moveEuler();
 
@@ -319,7 +308,7 @@ function calculateGravityCenter () {
     gravityCenter.sy=0;
     gravityCenter.mg=0;
 
-    for (let i=0; i< params.numParts; i++) {
+    for (let i=0; i< parts.length; i++) {
         //Add to gravity center
         gravityCenter.sx += parts[i].mass * parts[i].x;
         gravityCenter.sy += parts[i].mass * parts[i].y;
@@ -331,22 +320,7 @@ function calculateGravityCenter () {
 }
 
 
-function calculateAngleVelocity () {
-    for (let i=0; i< params.numParts; i++) {
-    //for (let i=0; i< 1; i++) {
-        let obj = parts[i];
-
-        let dx = gravityCenter.sx-obj.x;
-        let dy = gravityCenter.sy-obj.y;
-        let d = Math.floor(Math.sqrt(dx * dx + dy * dy));
-        let alpha = Math.atan (dy/dx);
-        obj.vx = gravityCenter.sx + d * Math.cos(alpha+0,02)- obj.x;
-        obj.vy = gravityCenter.sy + d * Math.sin(alpha+0,02)- obj.y;
-    }
-}
-
 function calculatePartAcceleration () {
-    let epsilon = params.partSize*params.smoothingFactor;
     for (let i=0; i< parts.length; i++) {
         let obj1 = parts[i];
 
@@ -355,46 +329,34 @@ function calculatePartAcceleration () {
 
             if (j != i) {
                 let obj2 = parts[j];
+                let epsilon = (obj1.rad+obj2.rad)*params.smoothingFactor;
                 
                 //Determine distance obj1-obj2
                 let dx = obj2.x-obj1.x;
                 let dy = obj2.y-obj1.y;
                 let d = Math.sqrt(dx * dx + dy * dy);
-                if (d > 2 * epsilon) {
-                    //Caluculate acceleration on obj1
-                    let d3 = Math.pow(d, 3); 
-                    obj1.ax += parseFloat(params.gravityFactor * obj2.mass * dx / d3);
-                    obj1.ay += parseFloat(params.gravityFactor * obj2.mass * dy / d3);     
-                } else {
+                if ((d < obj1.rad+obj2.rad) && (params.partsCrash==true)) {
+                    //Crash
+                    obj1.rad += obj2.rad;
+                    obj1.mass += obj2.mass;
+            
+                    //Remove the other
+                    parts.splice(j,1);
+                } else if (d < 2 * epsilon) {
                     //Reduce acceleration, if two parts get too close
                     let d2 = Math.pow (d, 2) + 4 * epsilon;
                     let d6 = Math.pow (d2, 3);
                     obj1.ax += parseFloat(params.gravityFactor * obj2.mass * 64 * epsilon * dx / d6);
                     obj1.ay += parseFloat(params.gravityFactor * obj2.mass * 64 * epsilon * dy / d6);     
-                }
+                } else {
+                    //Caluculate acceleration on obj1
+                    let d3 = Math.pow(d, 3); 
+                    obj1.ax += parseFloat(params.gravityFactor * obj2.mass * dx / d3);
+                    obj1.ay += parseFloat(params.gravityFactor * obj2.mass * dy / d3);     
+                } 
                 //console.log ("dx "+dx+" dy "+dy+" d "+d+" d3 "+d3+" ax "+obj1.ax+" ay "+obj1.ay+" d/d3 "+(d/d3));
             }
         }
-
-        if (params.gravityCenterSize>0) {
-
-            let dx = gravityCenter.sx-obj1.x;
-            let dy = gravityCenter.sy-obj1.y;
-            let d = Math.sqrt(dx * dx + dy * dy);
-            if (d > 2 * epsilon) {
-                //Caluculate acceleration on obj1
-                let d3 = Math.pow(d, 3); 
-                obj1.ax += parseFloat(params.gravityFactor * params.gravityCenterSize * params.massFactor * dx / d3);
-                obj1.ay += parseFloat(params.gravityFactor * params.gravityCenterSize * params.massFactor * dy / d3);     
-            } else {
-                //Reduce acceleration, if two parts get too close
-                let d2 = Math.pow (d, 2) + 4 * epsilon;
-                let d6 = Math.pow (d2, 3);
-                obj1.ax += parseFloat(params.gravityFactor * params.gravityCenterSize * params.massFactor * 64 * epsilon * dx / d6);
-                obj1.ay += parseFloat(params.gravityFactor * params.gravityCenterSize * params.massFactor * 64 * epsilon * dy / d6);     
-            }
-        }
-
         //console.log ("i "+i+" x "+obj1.x+" y "+obj1.y+" ax "+obj1.ax+" ay "+obj1.ay);
     }
 }

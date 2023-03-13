@@ -1,31 +1,38 @@
-//Constants ---------------------------------------------------------------
 const FILE_NAME = "drawart02.txt";
 let loopInterval = null;
 let loopCount = 0;
 let params = {
     file: FILE_NAME,
     simulationSpeed: 2000,
+    timeInterval: 0.1,
     numParts: 10,
     partSize: 1,
-    impactFactor: 0.99,
+    massFactor: 1,
+    smoothingFactor: 2,
+    gravityFactor: 1,
+    partsCrash: false,
     clearTrace: true,
 }
 let part = {
     x: 0,
     y: 0,
-    dx: 0,
-    dy: 0,
     rad: 0,
-    col: null,
     mass: 0,
+    col: null,
+    ax: 0.0,
+    ay: 0.0,
+    vx: 0.0,
+    vy: 0.0,
     init: function (x, y, dx, dy, rad, mass) {
       this.x = x;
       this.y = y;
-      this.dx = dx;
-      this.dy = dy;
       this.rad = rad;
-      this.col = partColors[Math.floor(Math.random() * partColors.length)];
       this.mass = mass;
+      this.col = partColors[Math.floor(Math.random() * partColors.length)];
+      this.ax = 0.0;
+      this.ay = 0.0;
+      this.vx = 0.0;
+      this.vy = 0.0;
     },
   };
   let parts = [];
@@ -41,6 +48,13 @@ let part = {
     "#426b84",
     "#506775"
     ];
+    let gravityCenter = {
+        sx: 0,
+        sy: 0,
+        mg: 0,
+    }
+    let ePot = 0.0;
+    let eKin = 0.0;
     
   
 
@@ -68,12 +82,21 @@ document.getElementById("full-button").onclick = function () {
 document.getElementById("save-button").onclick = function () {
   saveParams ();
 };
+  
+
+//Input elements
 document.getElementById("simulation-speed").oninput = function () {
-  params.simulationSpeed = parseInt(document.getElementById('simulation-speed').value);
-  document.getElementById("simulation-speed-value").innerHTML = "("+params.simulationSpeed+")";
-  //console.log ("simulation-speed "+params.simulationSpeed);
-  clearCanvas();
+    params.simulationSpeed = parseInt(document.getElementById('simulation-speed').value);
+    document.getElementById("simulation-speed-value").innerHTML = "("+params.simulationSpeed+")";
+    //console.log ("simulation-speed "+params.simulationSpeed);
+    clearCanvas();
 };
+document.getElementById("time-interval").oninput = function () {
+    params.timeInterval = parseFloat(document.getElementById('time-interval').value);
+    document.getElementById("time-interval-value").innerHTML = "("+params.timeInterval+")";
+    //console.log ("time-interval "+params.timeInterval);
+    clearCanvas();
+  };
 document.getElementById("num-parts").oninput = function () {
     params.numParts = parseInt(document.getElementById('num-parts').value);
     document.getElementById("num-parts-value").innerHTML = "("+params.numParts+")";
@@ -86,23 +109,41 @@ document.getElementById("part-size").oninput = function () {
     //console.log ("part-size "+params.partSize);
     clearCanvas();
 };
-document.getElementById("impact-factor").oninput = function () {
-    params.impactFactor = parseFloat(document.getElementById('impact-factor').value);
-    document.getElementById("impact-factor-value").innerHTML = "("+params.impactFactor+")";
-    //console.log ("impact-factor "+params.impactFactor);
+document.getElementById("mass-factor").oninput = function () {
+    params.massFactor = parseInt(document.getElementById('mass-factor').value);
+    document.getElementById("mass-factor-value").innerHTML = "("+params.massFactor+")";
+    //console.log ("mass-factor "+params.massFactor);
+    clearCanvas();
+};
+document.getElementById("gravity-factor").oninput = function () {
+    params.gravityFactor = parseInt(document.getElementById('gravity-factor').value);
+    document.getElementById("gravity-factor-value").innerHTML = "("+params.gravityFactor+")";
+    //console.log ("gravity-factor "+params.gravityFactor);
+    clearCanvas();
+};
+document.getElementById("smoothing-factor").oninput = function () {
+    params.smoothingFactor = parseInt(document.getElementById('smoothing-factor').value);
+    document.getElementById("smoothing-factor-value").innerHTML = "("+params.smoothingFactor+")";
+    //console.log ("smoothing-factor "+params.gravityFactor);
+    clearCanvas();
+};
+document.getElementById("parts-crash").onchange = function () {
+    params.partsCrash = document.getElementById('parts-crash').checked;
+    //console.log ("parts-crash "+params.partsCrash);
     clearCanvas();
 };
 document.getElementById("clear-trace").onchange = function () {
-  params.clearTrace = document.getElementById('clear-trace').checked;
-  //console.log ("clear-trace "+params.clearTrace);
-  clearCanvas();
+    params.clearTrace = document.getElementById('clear-trace').checked;
+    //console.log ("clear-trace "+params.clearTrace);
+    clearCanvas();
 };
 
 function startLoop () {
+    //Create randomly distributed parts.
     console.log("startLoop");
     if (parts.length==0) {
-        console.log ("Init parts "+params.partSize);
-      
+
+        console.log ("Init parts "+params.numParts);
         for (let i=0; i< params.numParts; i++) {
             parts[i] = new part.init ( 
             Math.floor(Math.random()*artCanvas.width), 
@@ -110,15 +151,15 @@ function startLoop () {
             0,
             0,
             params.partSize,
-            params.partSize*3,
+            params.partSize*params.massFactor,
             )
             if (parts[i].x<parts[i].rad) {parts[i].x += parts[i].rad;}
             if (parts[i].x>artCanvas.width-parts[i].rad) {parts[i].x -= parts[i].rad;}
             if (parts[i].y<parts[i].rad) {parts[i].y += parts[i].rad;}
             if (parts[i].y>artCanvas.height-parts[i].rad) {parts[i].y -= parts[i].rad;}
-        }  
-      }
-      
+        } 
+    }
+
     if (loopInterval == null) {
       loopInterval = setInterval(drawToCanvas, params.simulationSpeed);  
     }
@@ -155,25 +196,36 @@ function readParams () {
   //Receive data
   dynRequest.onreadystatechange = function () {
     if (dynRequest.readyState==4 && dynRequest.status==200) {    
-        //console.log ("Response "+dynRequest.responseText);
+        console.log ("Response "+dynRequest.responseText);
         var res = JSON.parse(dynRequest.responseText);
 
         //Init param values
         params.simulationSpeed = res.simulationSpeed;
+        params.timeInterval = res.timeInterval;
         params.numParts = res.numParts;
         params.partSize = res.partSize;
-        params.impactFactor = res.impactFactor;
+        params.massFactor = res.massFactor;
+        params.smoothingFactor = res.smoothingFactor;
+        params.gravityFactor = res.gravityFactor;
+        params.partsCrash = res.partsCrash;
         params.clearTrace = res.clearTrace;
 
         //Init drop down display
         document.getElementById("simulation-speed").value = params.simulationSpeed;
         document.getElementById("simulation-speed-value").innerHTML = "("+params.simulationSpeed+")";
+        document.getElementById("time-interval").value = params.timeInterval;
+        document.getElementById("time-interval-value").innerHTML = "("+params.timeInterval+")";
         document.getElementById("num-parts").value = res.numParts;
         document.getElementById("num-parts-value").innerHTML = "("+params.numParts+")";
         document.getElementById("part-size").value = params.partSize;
         document.getElementById("part-size-value").innerHTML = "("+params.partSize+")";
-        document.getElementById("impact-factor").value = params.impactFactor;
-        document.getElementById("impact-factor-value").innerHTML = "("+params.impactFactor+")";
+        document.getElementById("mass-factor").value = params.massFactor;
+        document.getElementById("mass-factor-value").innerHTML = "("+params.massFactor+")";
+        document.getElementById("smoothing-factor").value = params.smoothingFactor;
+        document.getElementById("smoothing-factor-value").innerHTML = "("+params.smoothingFactor+")";
+        document.getElementById("gravity-factor").value = params.gravityFactor;
+        document.getElementById("gravity-factor-value").innerHTML = "("+params.gravityFactor+")";
+        document.getElementById("parts-crash").checked = params.partsCrash;
         document.getElementById("clear-trace").checked = params.clearTrace;
     }
   }
@@ -181,8 +233,6 @@ function readParams () {
   dynRequest.open ('GET', '/parread?file='+FILE_NAME, true);
   dynRequest.send();
 }
-
-
   
 //Drawing ---------------------------------------------------------------
 function clearCanvas () {
@@ -198,83 +248,161 @@ function drawToCanvas () {
   if (params.clearTrace==true) {
     ctx.clearRect(0, 0, artCanvas.width, artCanvas.height);
   }
+  calculateGravityCenter();
   drawParts();
-  calculateVelocities();
-  moveParts();
+  drawGravityCenter();
+  calculatePartAcceleration();
+  moveEuler();
 
+  if (loopCount % 10 == 0) {
+    calculateEnergie();
+    //logParts();
+    //console.log("sx "+gravityCenter.sx+" sy "+gravityCenter.sy+" mg "+gravityCenter.mg);     
+
+  }
   
   loopCount++;
 }
 
 function drawParts () {
+    //Draw all parts
     for (let i=0; i< parts.length; i++) {
-        //console.log("draw ball "+i);
+        obj = parts[i];
+        if (params.clearTrace==false) {
+            ctx.beginPath();
+            ctx.arc(obj.x, obj.y, 1, 0, Math.PI*2);
+            ctx.fillStyle = obj.col;
+            ctx.fill();
+            ctx.closePath();          
+          } else {
+            ctx.beginPath();
+            ctx.arc(obj.x, obj.y, obj.rad, 0, Math.PI*2);
+            ctx.fillStyle = obj.col;
+            ctx.fill();
+            ctx.closePath();            
+          }     
+    }
+}
+
+function drawGravityCenter () {
+    //Draw gravity center
+    if (params.clearTrace==false) {
         ctx.beginPath();
-        ctx.arc(parts[i].x, parts[i].y, parts[i].rad, 0, Math.PI*2);
-        ctx.fillStyle = parts[i].col;
+        ctx.arc(gravityCenter.sx, gravityCenter.sy, 1, 0, Math.PI*2);
+        ctx.fillStyle = "#ff0000";
         ctx.fill();
-        ctx.closePath();  
-    }
-    
-}
-
-function calculateVelocities () {
-  
-  for (let i=0; i< parts.length; i++) {
-    let obj1 = parts[i];
-    //console.log ("obj1 x "+obj1.x+" y "+obj1.y);
-
-    for (let j=i+1; j< parts.length; j++) {
-      let obj2 = parts[j];
-      //console.log ("obj2 x "+obj2.x+" y "+obj2.y)
-
-      //Calulate distance
-      let distance = Math.sqrt((obj2.x-obj1.x)*(obj2.x-obj1.x) + (obj2.y-obj1.y)*(obj2.y-obj1.y));
-      if (distance<=obj1.rad) {
-        //parts crashed - create one bigger part velocity decreases because of deformation (*0.5)
-        obj1.rad += obj2.rad;
-        obj1.mass += obj2.mass;
-        obj1.dx = (obj1.dx+obj2.mass*(obj1.x-obj2.x))*0.5;
-        obj1.dy = (obj1.dy+obj2.mass*(obj1.y-obj2.y))*0.5;
-
-        //Remove the other
-        parts.splice(j,1);
-      }
-      else {
-        //Spped change considering object mass
-        obj1.dx += obj1.mass*(obj2.x-obj1.x) / Math.pow(distance, 2);
-        obj1.dy += obj1.mass*(obj2.y-obj1.y) / Math.pow(distance, 2);  
-
-        obj2.dx += obj2.mass*(obj1.x-obj2.x) / Math.pow(distance, 2);
-        obj2.dy += obj2.mass*(obj1.y-obj2.y) / Math.pow(distance, 2);  
-      }
-
-    }
-    //console.log ("after move obj1 x "+obj1.x+" y "+obj1.y);
-  }
-}
-
-function moveParts () {
-  for (let i=0; i< parts.length; i++) {
-    let leftSpace = false;
-    if (parts[i].x <0) {
-      leftSpace = true;
-    } else if (parts[i].x>artCanvas.width) {
-      leftSpace = true;
-    } else if (parts[i].y <0) {
-      leftSpace = true;
-    } else if (parts[i].y>artCanvas.height) {
-      leftSpace = true;
-    }
-
-    if (leftSpace == true) {
-      //part has left the dsiplay space
-      parts.splice(i,1);
+        ctx.closePath();          
     } else {
-      parts[i].x += parts[i].dx;
-      parts[i].y += parts[i].dy;  
+        ctx.beginPath();
+        ctx.arc(gravityCenter.sx, gravityCenter.sy, 5, 0, Math.PI*2);
+        ctx.setLineDash([]);
+        ctx.strokeStyle = "#ff0000";
+        ctx.stroke();
+        ctx.closePath();
     }
-  }
 }
 
-  
+function calculateGravityCenter () {
+    //Initialize grabity center
+    gravityCenter.sx=0;
+    gravityCenter.sy=0;
+    gravityCenter.mg=0;
+
+    for (let i=0; i< parts.length; i++) {
+        //Add to gravity center
+        gravityCenter.sx += parts[i].mass * parts[i].x;
+        gravityCenter.sy += parts[i].mass * parts[i].y;
+        gravityCenter.mg += parts[i].mass;    
+    }
+    gravityCenter.sx = Math.floor(gravityCenter.sx/gravityCenter.mg);
+    gravityCenter.sy = Math.floor(gravityCenter.sy/gravityCenter.mg);
+    //console.log("sx "+gravityCenter.sx+" sy "+gravityCenter.sy+" mg "+gravityCenter.mg);     
+}
+
+
+function calculatePartAcceleration () {
+    for (let i=0; i< parts.length; i++) {
+        let obj1 = parts[i];
+
+        //Acceleration based on other parts
+        for (let j=0; j< parts.length; j++) {
+
+            if (j != i) {
+                let obj2 = parts[j];
+                let epsilon = (obj1.rad+obj2.rad)*params.smoothingFactor;
+                
+                //Determine distance obj1-obj2
+                let dx = obj2.x-obj1.x;
+                let dy = obj2.y-obj1.y;
+                let d = Math.sqrt(dx * dx + dy * dy);
+                if ((d < obj1.rad+obj2.rad) && (params.partsCrash==true)) {
+                    //Crash
+                    obj1.rad += obj2.rad;
+                    obj1.mass += obj2.mass;
+            
+                    //Remove the other
+                    parts.splice(j,1);
+                } else if (d < 2 * epsilon) {
+                    //Reduce acceleration, if two parts get too close
+                    let d2 = Math.pow (d, 2) + 4 * epsilon;
+                    let d6 = Math.pow (d2, 3);
+                    obj1.ax += parseFloat(params.gravityFactor * obj2.mass * 64 * epsilon * dx / d6);
+                    obj1.ay += parseFloat(params.gravityFactor * obj2.mass * 64 * epsilon * dy / d6);     
+                } else {
+                    //Caluculate acceleration on obj1
+                    let d3 = Math.pow(d, 3); 
+                    obj1.ax += parseFloat(params.gravityFactor * obj2.mass * dx / d3);
+                    obj1.ay += parseFloat(params.gravityFactor * obj2.mass * dy / d3);     
+                } 
+                //console.log ("dx "+dx+" dy "+dy+" d "+d+" d3 "+d3+" ax "+obj1.ax+" ay "+obj1.ay+" d/d3 "+(d/d3));
+            }
+        }
+        //console.log ("i "+i+" x "+obj1.x+" y "+obj1.y+" ax "+obj1.ax+" ay "+obj1.ay);
+    }
+}
+
+function moveEuler () {
+
+    for (let i=0; i< parts.length; i++) {
+        let obj = parts[i];
+
+        //Calculate new position
+        obj.x += Math.floor(obj.vx * params.timeInterval);
+        obj.y += Math.floor(obj.vy * params.timeInterval);
+
+        //Calculate new velocity
+        obj.vx += obj.ax * params.timeInterval;
+        obj.vy += obj.ay * params.timeInterval;
+    }
+
+}
+
+function calculateEnergie () {
+    eKin = 0.0;
+    ePot = 0.0;
+
+    for (let i=0; i< parts.length; i++) {
+        let obj1 = parts[i];
+
+        eKin += obj1.mass * Math.pow(Math.sqrt(obj1.vx * obj1.vx + obj1.vy * obj1.vy), 2) / 2;
+
+        for (let j=i+1; j< parts.length; j++) {
+            let obj2 = parts[j];
+
+            let dx = obj2.x-obj1.x;
+            let dy = obj2.y-obj1.y;
+            let d = Math.sqrt(dx * dx + dy * dy); 
+
+            ePot -= params.gravityFactor * obj1.mass * obj2.mass / 2;
+        }
+    }
+    console.log ("eKin "+eKin+" ePot "+ePot);
+}
+
+function logParts () {
+
+    for (let i=0; i< parts.length; i++) {
+        let obj = parts[i];
+        console.log ("i "+i+" x "+obj.x+" y "+obj.y);
+    }
+}
